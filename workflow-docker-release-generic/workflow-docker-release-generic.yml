@@ -1,0 +1,108 @@
+name: "Workflow Docker Release - Generic"
+
+on:
+  workflow_call:
+    inputs:
+      docker-image-repo:
+        description: Docker image repository
+        type: string
+        required: true 
+      docker-image-name:
+        description: Docker image name
+        type: string
+        required: true
+      version:
+        type: string
+        required: false
+        description: Semvers string. If empty, the ref/tag will be used (if on.tag trigger).
+        default: ''
+      latest-tag:
+        type: boolean
+        required: false
+        description: Add latest flavor
+        default: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') }}
+    secrets:
+      token:
+        required: false
+      dockerhub-username:
+        required: false
+      dockerhub-token:
+        required: false
+    outputs:
+      image-id: 
+        value: ${{ jobs.publish.outputs.image-id }}
+      image-digest: 
+        value: ${{ jobs.publish.outputs.image-digest }}
+      image-metadata: 
+        value: ${{ jobs.publish.outputs.image-metadata }}
+
+jobs: 
+  publish:
+    runs-on: ubuntu-latest
+    outputs:
+      docker-meta-tags: ${{ steps.meta.outputs.tags }}
+      docker-meta-labels: ${{ steps.meta.outputs.labels }}
+      image-id: ${{ steps.build.outputs.imageid }}
+      image-digest: ${{ steps.build.outputs.digest }}
+      image-metadata: ${{ steps.build.outputs.metadata }}
+    steps:
+    - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+      with:
+        egress-policy: audit
+        
+    - name: Checkout
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #4.1.1
+
+    - name: "Download Pre-build Artifacts"
+      uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe #4.1.2
+      with:
+        pattern: pre-build-*
+        merge-multiple: true
+
+    - name: "Download Build Artifacts"
+      uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe #4.1.2
+      with:
+        pattern: build-*
+        merge-multiple: true
+
+    - name: Extract Docker metadata
+      id: meta
+      uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81 #5.5.1
+      with:
+        images: ${{ inputs.docker-image-repo }}/${{ inputs.docker-image-name }}
+        tags: |
+          type=semver,pattern={{version}},value=${{ inputs.version }}
+          type=semver,pattern={{major}}.{{minor}},value=${{ inputs.version }}
+          type=semver,pattern={{major}},value=${{ inputs.version }}
+          type=ref,event=branch,suffix=-{{ sha }}
+          type=ref,event=pr
+          type=raw,value=latest,enable=${{ inputs.latest-tag }}
+        flavor: |
+          latest=false
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3 #3.0.0
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 #3.0.0
+
+    - name: Login to Container Registry
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.dockerhub-username }}
+        password: ${{ secrets.dockerhub-token }}
+
+    - name: Build and export Docker image
+      id: build
+      uses: docker/build-push-action@4a13e500e55cf31b7a5d59a38ab2040ab0f42f56 #5.1.0
+      with:
+        context: .
+        platforms: linux/amd64, linux/arm64
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        provenance: true
+        sbom: true
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+

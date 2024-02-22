@@ -1,0 +1,38 @@
+name: "Update BuildInfo.properties"
+description: "Updates the BuildInfo.properties file with the new version and datetime."
+inputs:
+  path:
+    description: Path to the BuildInfo.properties file.
+    required: true
+    default: 'src/main/resources/BuildInfo.properties'
+  version:
+    description: New version to write to BuildInfo.properties.
+    required: true
+  as-configuration-version:
+    description: Write the new version in the property `configuration.version` instead of `instance.version`.
+    required: true
+    default: 'false'
+
+runs:
+  using: "composite"
+  steps:        
+    - name: Update BuildInfo
+      shell: bash
+      run: |
+        set -eux
+
+        if [[ "${{inputs.path}}" = *".properties" ]]; then
+          BUILDINFO_FILE="${{inputs.path}}"
+        elif [[ "${{inputs.path}}" = *"\/" ]]; then
+          BUILDINFO_FILE="${{inputs.path}}BuildInfo.properties"
+        else
+          BUILDINFO_FILE="${{inputs.path}}/BuildInfo.properties"
+        fi
+
+        if ! $(touch -c ${BUILDINFO_FILE}); then
+          echo "Unable to find file at: ${BUILDINFO_FILE}" >&2
+          exit 1
+        fi
+
+        echo "$(${{inputs.as-configuration-version}} && echo "configuration" || echo "instance").version=${{inputs.version}}" > ${BUILDINFO_FILE}
+        echo "versionDate_ddmmyyyy=$(date +%d/%m/%Y)" >> ${BUILDINFO_FILE}

@@ -1,0 +1,51 @@
+name: "Run Docker till healthy"
+description: "Runs the Docker container till the health endpoint returns 'HEALTHY', indicating that the database and adapters are all correctly started"
+inputs:
+  image-id:
+    description: Docker image id of the loaded image to use
+    required: false
+  docker-image-tag:
+    description: Docker image tag. 'busybox:1.2.0'
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+  - name: "Docker List Images"
+    shell: bash
+    run: |
+      docker image ls -a
+
+  - name: Test Docker image
+    shell: bash
+    run: |
+      set -x
+
+      docker run -p 8080:8080 -e dtap.stage=LOC --name=test -d ${{ inputs.image-id || inputs.docker-image-tag }}
+
+      sleep 30
+
+      RETRY_COUNT=0
+      HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' test)
+      until [ "$HEALTH" = '"healthy"' ]
+      do
+        if [ $RETRY_COUNT -gt 15 ]
+          then
+              exit 1
+        fi
+
+        let RETRY_COUNT+=1
+        HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' test)
+        sleep 15
+      done
+
+  - name: "Inspect and cleanup"
+    shell: bash
+    if: ${{ always() }}
+    run: |
+      docker inspect test
+      docker logs test
+      docker stats --no-stream test
+      docker stop test
+      docker rm --volumes test
+      

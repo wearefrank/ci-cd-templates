@@ -1,0 +1,28 @@
+name: "Next Reference"
+description: "Obtain the next reference. Tag -> `<tag>``, Pull-request -> `pr-<pr-number>`, otherwise -> `<branch>-<short-sha>`"
+outputs:
+  next-reference:
+    description: The next reference
+    value: ${{ steps.reference.outputs.next-reference}}
+
+runs:
+  using: "composite"
+  steps:        
+    - name: Next Reference
+      id: reference
+      shell: bash
+      run: |
+        set -x
+
+        if [ "$GITHUB_REF_TYPE" = "tag" ]
+        then
+          echo "next-reference=${GITHUB_REF//"refs/tags/"/""}" >> "$GITHUB_OUTPUT"
+        elif [ "$GITHUB_EVENT_NAME" = "pull_request" ]
+        then
+          echo "next-reference=pr-${GITHUB_REF_NAME//"/merge"/""}" >> "$GITHUB_OUTPUT"
+        else
+          echo "next-reference=${GITHUB_REF//"refs/heads/"/""}-$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+        fi
+      
+
+      
