@@ -74,7 +74,6 @@ jobs:
           type=semver,pattern={{version}},value=${{ inputs.version }}
           type=semver,pattern={{major}}.{{minor}},value=${{ inputs.version }}
           type=semver,pattern={{major}},value=${{ inputs.version }}
-          type=ref,event=branch,suffix=-{{ sha }}
           type=ref,event=pr
           type=raw,value=latest,enable=${{ inputs.latest-tag }}
         flavor: |
