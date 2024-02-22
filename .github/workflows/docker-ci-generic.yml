@@ -224,7 +224,7 @@ jobs:
         token: ${{ secrets.token }}
 
     - name: Run till healthy
-      uses: wearefrank/ci-cd-templates/action-frank-run-till-healthy@main
+      uses: wearefrank/ci-cd-templates/frank-run-till-healthy@main
       with:
         image-id: ${{ needs.build.outputs.image-id }}
 
