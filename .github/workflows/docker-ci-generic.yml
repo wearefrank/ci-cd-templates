@@ -54,6 +54,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read 
     outputs:
       docker-meta-tags: ${{ steps.meta.outputs.tags }}
       docker-meta-labels: ${{ steps.meta.outputs.labels }}
@@ -63,7 +65,14 @@ jobs:
     steps:
     - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
       with:
+        disable-sudo: true
         egress-policy: audit
+        allowed-endpoints: >
+          api.github.com:443
+          auth.docker.io:443
+          github.com:443
+          production.cloudflare.docker.com:443
+          registry-1.docker.io:443
 
     - name: Checkout
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #4.1.1
@@ -122,11 +131,17 @@ jobs:
 
   checkov-linter:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read 
     if: inputs.chekov-linter-enabled
     steps:
     - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
       with:
+        disable-sudo: true
         egress-policy: audit
+        allowed-endpoints: >
+          github.com:443
+          pypi.org:443
 
     - name: Checkout
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #4.1.1
@@ -201,12 +216,17 @@ jobs:
 
   run-till-healthy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: inputs.run-frank-till-healthy-enabled
     needs: build
     steps:
     - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
       with:
+        disable-sudo: true
         egress-policy: audit
+        allowed-endpoints: >
+          github.com:443
 
     - name: "Download Docker tar"
       uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe #4.1.2
