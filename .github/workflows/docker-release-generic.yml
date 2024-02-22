@@ -1,4 +1,4 @@
-name: "Workflow Docker Release - Generic"
+name: "Docker Release - Generic"
 
 on:
   workflow_call:

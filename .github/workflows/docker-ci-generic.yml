@@ -1,4 +1,4 @@
-name: "Workflow Docker Continuous Integration - Generic"
+name: "Docker Continuous Integration - Generic"
 
 on:
   workflow_call:

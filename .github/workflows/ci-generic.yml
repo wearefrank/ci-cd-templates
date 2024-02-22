@@ -1,4 +1,4 @@
-name: "Workflow Continuous Integration - Generic"
+name: "Continuous Integration - Generic"
 
 on:
   workflow_call:
