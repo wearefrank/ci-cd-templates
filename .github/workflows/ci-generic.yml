@@ -23,6 +23,16 @@ on:
         required: false
         description: Upload Sarif reports to Github Security dashboard
         default: false
+      chekov-linter-enabled:
+        type: boolean
+        required: false
+        description: Run Chekov Linter
+        default: true
+      run-frank-till-healthy-enabled:
+        type: boolean
+        required: false
+        description: Run Frank till the health endpoints returns 'HEALTHY'
+        default: true
     secrets:
       token:
         required: false
@@ -74,5 +84,7 @@ jobs:
       docker-image-repo: ${{ inputs.docker-image-repo }}
       docker-image-name: ${{ inputs.docker-image-name }}
       upload-sarif-to-security: false
+      chekov-linter-enabled: ${{ inputs.chekov-linter-enabled }}
+      run-frank-till-healthy-enabled: ${{ inputs.run-frank-till-healthy-enabled }}
 
   
