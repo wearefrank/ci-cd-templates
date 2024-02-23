@@ -26,6 +26,13 @@ on:
     secrets:
       token:
         required: false
+    outputs:
+      image-id: 
+        value: ${{ jobs.docker-ci.outputs.image-id }}
+      image-digest: 
+        value: ${{ jobs.docker-ci.outputs.image-digest }}
+      image-metadata: 
+        value: ${{ jobs.docker-ci.outputs.image-metadata }}
 
 
 jobs:
