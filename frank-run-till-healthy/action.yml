@@ -2,17 +2,24 @@ name: "Run Docker till healthy"
 description: "Runs the Docker container till the health endpoint returns 'HEALTHY', indicating that the database and adapters are all correctly started"
 inputs:
   image-id:
-    description: Docker image id of the loaded image to use
+    description: >
+      Docker image id of the loaded image to use.
+
+      Note that the Docker image needs to be available to the Docker runtime already.
     required: false
   docker-image-tag:
-    description: Docker image tag. 'busybox:1.2.0'
+    description: >
+      Docker image tag of the loaded image to use. For example: 'wearefrank/zaakbrug:1.2.0'.
+
+      Note that the Docker image needs to be available to the Docker runtime already.
     required: false
 
 runs:
   using: "composite"
   steps:
-  - name: "Docker List Images"
+  - name: List loaded Docker images
     shell: bash
+    if: runner.debug == '1'
     run: |
       docker image ls -a
 
@@ -39,13 +46,18 @@ runs:
         sleep 15
       done
 
-  - name: "Inspect and cleanup"
+  - name: Docker inspect, stats and logs
     shell: bash
-    if: ${{ always() }}
+    if: runner.debug == '1'
     run: |
       docker inspect test
       docker logs test
       docker stats --no-stream test
+
+  - name: Cleanup
+    shell: bash
+    if: ${{ always() }}
+    run: |
       docker stop test
       docker rm --volumes test
       

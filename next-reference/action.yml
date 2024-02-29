@@ -1,5 +1,11 @@
 name: "Next Reference"
-description: "Obtain the next reference. Tag -> `<tag>``, Pull-request -> `pr-<pr-number>`, otherwise -> `<branch>-<short-sha>`"
+description: >
+  Generates a reference to use for when a version is not available or appropriate.
+
+  Default behavior in order:
+  - Triggered by tag -> `<tag>`. Example: `v1.0.0`.
+  - Triggered by Pull-request -> `pr-<pr-number>`. Example: `pr-5`.
+  - Otherwise -> `<branch>-<short-sha>`. Example: `feature-branch-1-9d2485a`.
 outputs:
   next-reference:
     description: The next reference
