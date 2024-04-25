@@ -47,6 +47,26 @@ on:
         type: string
         description: docker-compose yml file path
         default: './docker-compose.zaakbrug.dev.yml'
+      frankconfig-path:
+        type: string
+        description: FrankConfig.xsd file path in main folder
+        default: './src/main'
+      frankconfigunderconfiguration-path:
+        type: string
+        description: FrankConfig.xsd file path under configuration folder
+        default: './src/main/configurations'
+      custom-file-paths-source:
+        type: string
+        description: |
+          List of paths of the custom files in source code
+          Example: '["parameters/Parameter.java", "another/path/File.java"]'
+        default: '["parameters/Parameter.java"]'
+      custom-file-paths-project:
+        type: string
+        description: |
+          List of paths of the custom files in project repo
+          Example: '["./src/main/java/org/frankframework/parameters/Parameter.java-orig", "./another/path/File.java"]'
+        default: '["./src/main/java/org/frankframework/parameters/Parameter.java-orig"]'
     secrets:
       token:
         required: false
@@ -111,28 +131,33 @@ jobs:
     - name: Update FrankConfig.xsd files
       if: ${{ env.VERSION_CHANGED }} == 'true'
       run: |
-        rm ./src/main/FrankConfig.xsd
-        rm ./src/main/configurations/FrankConfig.xsd
+        rm ${{ inputs.frankconfig-path }}/FrankConfig.xsd
+        rm ${{ inputs.frankconfigunderconfiguration-path }}/FrankConfig.xsd
         wget -O parent.jar "https://nexus.frankframework.org/repository/releases/org/frankframework/frankframework-parent/${{ env.REQUESTED_IMAGE_VERSION_TAG }}/frankframework-parent-${{ env.REQUESTED_IMAGE_VERSION_TAG }}-frankdoc.jar"
-        mkdir -p ./src/parent_temp_extract
-        unzip -q parent.jar -d ./src/parent_temp_extract
-        cp ./src/parent_temp_extract/xml/xsd/FrankConfig.xsd ./src/main
-        cp ./src/parent_temp_extract/xml/xsd/FrankConfig.xsd ./src/main/configurations
+        mkdir -p parent_temp_extract
+        unzip -q parent.jar -d ./parent_temp_extract
+        cp ./parent_temp_extract/xml/xsd/FrankConfig.xsd ${{ inputs.frankconfig-path }}
+        cp ./parent_temp_extract/xml/xsd/FrankConfig.xsd ${{ inputs.frankconfigunderconfiguration-path }}
     
-    - name: Update Parameter.java-orig file
+    - name: Update Custom Files
       if: ${{ env.VERSION_CHANGED }} == 'true'
       run: |
         wget -O source.jar "https://nexus.frankframework.org/repository/releases/org/frankframework/frankframework-core/${{ env.REQUESTED_IMAGE_VERSION_TAG }}/frankframework-core-${{ env.REQUESTED_IMAGE_VERSION_TAG }}-sources.jar"
-        mkdir -p ./src/source_temp_extract
-        unzip -q source.jar -d ./src/source_temp_extract
+        mkdir -p source_temp_extract
+        unzip -q source.jar -d ./source_temp_extract
 
-        if cmp -s source_temp_extract/org/frankframework/parameters/Parameter.java ./src/main/java/org/frankframework/parameters/Parameter.java-orig
-          then
-            echo "Parameter.java file hasn't been updated."
-        else
-            echo "Parameter.java file has been updated. Copying the new version of Parameter.java file to the Parameter.java-orig file in repository."
-            cp ./src/source_temp_extract/org/frankframework/parameters/Parameter.java ./src/main/java/org/frankframework/parameters/Parameter.java-orig
-        fi
+        for i in "${!custom_file_paths_source[@]}"
+          do
+            custom_file_source_path="${custom_file_paths_source[$i]}"
+            custom_file_project_path="${custom_file_paths_project[$i]}"
+            if cmp -s "source_temp_extract/org/frankframework/$custom_file_source_path" "$custom_file_project_path"
+              then
+                echo "$custom_file_source_path file hasn't been updated."
+            else
+              echo "$custom_file_source_path file has been updated. Copying the new version of $custom_file_source_path file to the $custom_file_project_path file in repository."
+              cp "./source_temp_extract/org/frankframework/$custom_file_source_path" "$custom_file_project_path"
+            fi
+        done
 
     - name: Commit updated files
       if: ${{ env.VERSION_CHANGED }} == 'true'
@@ -142,9 +167,12 @@ jobs:
         git add ${{ inputs.dockerfile-path }}
         git add ${{ inputs.frankrunnerproperties-path }}
         git add ${{ inputs.dockercompose-path }}
-        git add ./src/main/FrankConfig.xsd
-        git add ./src/main/configurations/FrankConfig.xsd
-        git add ./src/main/java/org/frankframework/parameters/Parameter.java-orig
+        git add ${{ inputs.frankconfig-path }}/FrankConfig.xsd
+        git add ${{ inputs.frankconfigunderconfiguration-path }}/FrankConfig.xsd
+        for custom_file_project_path in "${!custom_file_paths_project[@]}"
+          do
+            git add "$custom_file_project_path"
+        done
         git commit -m 'build(dependencies): bump f!f version to ${{ env.REQUESTED_IMAGE_VERSION_TAG }}'
         git push origin bump-f!f-version-to-${{ env.REQUESTED_IMAGE_VERSION_TAG }}
       
