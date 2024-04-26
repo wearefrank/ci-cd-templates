@@ -115,6 +115,7 @@ jobs:
         sed -i "s/${{ inputs.regex-for-dockerfile }}/${{ inputs.replacement-for-dockerfile }}/" ${{ inputs.dockerfile-path }}
         sed -i "s/${{ inputs.regex-for-frankrunnerproperties }}/${{inputs.replacement-for-frankrunnerproperties}}/" ${{ inputs.frankrunnerproperties-path }}
         sed -i "s/${{inputs.regex-for-dockercompose}}/${{inputs.replacement-for-dockercompose}}/" ${{ inputs.dockercompose-path }}
+      continue-on-error: true
 
     - name: Update FrankConfig.xsd files
       if: ${{ env.VERSION_CHANGED }} == 'true'
@@ -140,6 +141,7 @@ jobs:
             echo "Parameter.java file has been updated. Copying the new version of Parameter.java file to the Parameter.java-orig file in repository."
             cp ./source_temp_extract/org/frankframework/parameters/Parameter.java ./src/main/java/org/frankframework/parameters/Parameter.java-orig
           fi
+      continue-on-error: true
 
     - name: Commit updated files
       if: ${{ env.VERSION_CHANGED }} == 'true'
@@ -154,6 +156,7 @@ jobs:
         git add ./src/main/java/org/frankframework/parameters/Parameter.java-orig
         git commit -m 'build(dependencies): bump f!f version to ${{ env.REQUESTED_IMAGE_VERSION_TAG }}'
         git push origin bump-f!f-version-to-${{ env.REQUESTED_IMAGE_VERSION_TAG }}
+      continue-on-error: true
       
     - name: Docker Scout
       if: ${{ env.VERSION_CHANGED }} == 'true'
