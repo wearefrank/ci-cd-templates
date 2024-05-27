@@ -6,12 +6,12 @@ on:
       docker-image-repo:
         description: Docker image repository. Default -> GitHub repository owner/organisation.
         type: string
-        required: true
+        required: false
         default: ${{ github.repository_owner }}
       docker-image-name:
         description: Docker image name. Default -> GitHub repository name.
         type: string
-        required: true
+        required: false
         default: ${{ github.event.repository.name }}
       version:
         type: string
