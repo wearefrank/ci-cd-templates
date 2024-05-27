@@ -12,11 +12,11 @@ ci:
     token: ${{ secrets.GITHUB_TOKEN }}
   with:
     # Docker image repository without 'docker.io/' for example.
-    # Default: Repository owner/organisation
+    # Default: GitHub repository owner/organisation.
     docker-image-repo: 'wearefrank'
 
     # Docker image name.
-    # Default: Repository name
+    # Default: GitHub repository name.
     docker-image-name: 'zaakbrug'
 
     # Semvers string or reference.
