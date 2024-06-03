@@ -33,9 +33,9 @@ update-ff-version:
     # Default: '^ARG FF_VERSION=.*' --> i.e used to find the line "ARG FF_VERSION=8.1.0-20240404.042328" in Dockerfile
     regex-for-dockerfile: '^ARG FF_VERSION=.*'
 
-    # The line which will be replaced with the line found by regex in Dockerfile.
-    # Default: 'ARG FF_VERSION=${requested_image_version_tag}' --> The version tag is assigned depending on the requested FF version.
-    replacement-for-dockerfile: 'ARG FF_VERSION=${requested_image_version_tag}'
+    # The line which will be substituted with the line found by regex in Dockerfile. This line includes only the variable name, the version tag will be added next to this variable later on depending on the requested FF version.
+    # Default: 'ARG FF_VERSION='
+    replacement-for-dockerfile: 'ARG FF_VERSION='
 
     # The path of the Dockerfile that has the FF version in the project repo.
     # Default: './Dockerfile' --> As default it is located in the root of the project.
@@ -45,9 +45,9 @@ update-ff-version:
     # Default: '^ff.version=.*' --> i.e used to find the line "ff.version=8.1.0-20240404.042328" in frank-runner.properties file
     regex-for-frankrunnerproperties: '^ff.version=.*'
 
-    # The line which will be replaced with the line found by regex in frank-runner.properties file.
-    # Default: 'ff.version=${requested_image_version_tag}' --> The version tag is assigned depending on the requested FF version.
-    replacement-for-frankrunnerproperties: 'ff.version=${requested_image_version_tag}'
+    # The line which will be substituted with the line found by regex in frank-runner.properties file. This line includes only the variable name, the version tag will be added next to this variable later on depending on the requested FF version.
+    # Default: 'ff.version='
+    replacement-for-frankrunnerproperties: 'ff.version='
 
     # The path of frank-runner.properties file that has the FF version in the project repo.
     # Default: './frank-runner.properties' --> As default it is located in the root of the project.
@@ -57,9 +57,9 @@ update-ff-version:
     # Default: 'FF_VERSION:\s\${FF_VERSION:-.*' --> i.e used to find the line "FF_VERSION: ${FF_VERSION:-8.1.0-20240404.042328}" in docker-compose file
     regex-for-dockercompose: 'FF_VERSION:\s\${FF_VERSION:-.*'
 
-    # The line which will be replaced with the line found by regex in docker-compose.yml file.
-    # Default: 'FF_VERSION: \${FF_VERSION:-${requested_image_version_tag}}' --> The version tag is assigned depending on the requested FF version.
-    replacement-for-docker-compose: 'FF_VERSION: \${FF_VERSION:-${requested_image_version_tag}}'
+    # The line which will be substituted with the line found by regex in docker-compose.yml file. This line includes only the variable name, the version tag will be added next to this variable later on depending on the requested FF version.
+    # Default: 'FF_VERSION: \${FF_VERSION:-'
+    replacement-for-docker-compose: 'FF_VERSION: \${FF_VERSION:-'
 
     # The path of docker-compose file that has the FF version in the project repo.
     # Default: './docker-compose.zaakbrug.dev.yml' --> As default it is located in the root of the project.
