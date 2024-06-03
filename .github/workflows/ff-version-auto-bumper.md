@@ -23,7 +23,7 @@ update-ff-version:
   with:
     # F!F version tag requested to update in your project to. It has to be after 8.0.1(including)
     # Default: 'latest'
-    ff-version-tag: '8.2.0'
+    ff-version-tag: '8.2'
 
     # Project name. It doesn't have any effect on the process of the workflow, just informative.
     # Default: 'Zaakbrug'
