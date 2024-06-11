@@ -14,7 +14,7 @@ on:
         required: false
         default: './docusaurus'
     outputs:
-      image-id: 
+      docusaurus-url: 
         value: ${{ jobs.publish.outputs.docusaurus-url }}
 
 jobs:
