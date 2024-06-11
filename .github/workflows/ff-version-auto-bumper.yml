@@ -55,9 +55,9 @@ on:
         type: boolean
         description: Enable or disable the update of the docker-compose file
         default: true
-      configurations-folder-path:
+      configurations-folder-dir:
         type: string
-        description: configurations folder path
+        description: configurations folder directory
         default: './src/main/configurations'
       update-frankconfig-enabled:
         type: boolean
@@ -155,7 +155,7 @@ jobs:
         wget -O parent.jar "https://nexus.frankframework.org/repository/releases/org/frankframework/frankframework-parent/${{ env.REQUESTED_IMAGE_VERSION_TAG }}/frankframework-parent-${{ env.REQUESTED_IMAGE_VERSION_TAG }}-frankdoc.jar"
         mkdir -p parent_temp_extract
         unzip -q parent.jar -d ./parent_temp_extract
-        find "${{ inputs.configurations-folder-path }}/.." -type f -name "FrankConfig.xsd" \( -path "${{ inputs.configurations-folder-path }}" -o -path "${{ inputs.configurations-folder-path }}/*" \) -exec sh -c '
+        find "${{ inputs.configurations-folder-dir }}/.." -type f -name "FrankConfig.xsd" \( -path "${{ inputs.configurations-folder-dir }}" -o -path "${{ inputs.configurations-folder-dir }}/*" \) -exec sh -c '
           for frankconfig_path; do
             cp ./parent_temp_extract/xml/xsd/FrankConfig.xsd "$frankconfig_path"
             echo "Updated $frankconfig_path"
