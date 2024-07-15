@@ -76,13 +76,13 @@ jobs:
       uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #4.1.7
 
     - name: "Download Pre-build Artifacts"
-      uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e #4.1.7
+      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 #4.1.8
       with:
         pattern: pre-build-*
         merge-multiple: true
 
     - name: "Download Build Artifacts"
-      uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e #4.1.7
+      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 #4.1.8
       with:
         pattern: build-*
         merge-multiple: true
@@ -102,14 +102,14 @@ jobs:
           latest=false
 
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3 #3.0.0
+      uses: docker/setup-qemu-action@5927c834f5b4fdf503fca6f4c7eccda82949e1ee #3.1.0
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb #3.3.0
+      uses: docker/setup-buildx-action@4fd812986e6c8c2a69e18311145f9371337f27d4 #3.4.0
 
     - name: Build and export Docker image
       id: build
-      uses: docker/build-push-action@15560696de535e4014efeff63c48f16952e52dd1 #6.2.0
+      uses: docker/build-push-action@1a162644f9a7e87d8f4b053101d1d9a712edc18c #6.3.0
       with:
         context: .
         platforms: linux/amd64
@@ -121,7 +121,7 @@ jobs:
         cache-to: type=gha,mode=max
 
     - name: "Upload Docker tar"
-      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #4.3.3
+      uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b #4.3.4
       with:
         name: build-docker-image
         path: ./image.tar
@@ -146,7 +146,7 @@ jobs:
 
     - name: Lint Dockerfile with Checkov
       id: checkov
-      uses: bridgecrewio/checkov-action@1aa570d5235ac1bb571b6ad857c5ca3ba3670b74 #12.2798.0
+      uses: bridgecrewio/checkov-action@4bb67465e1497251e876269c248f3f8efda3bce5 #12.2823.0
       with:
         directory: .
         framework: dockerfile
@@ -158,13 +158,13 @@ jobs:
         output_file_path: reports/checkov-results.sarif
 
     - name: Upload Sarif report as artifact
-      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #4.3.3
+      uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b #4.3.4
       with:
         name: checkov-results
         path: reports/checkov-results.sarif
 
     - name: Upload to GitHub Security
-      uses: github/codeql-action/upload-sarif@b611370bb5703a7efb587f9d136a52ea24c5c38c #3.25.11
+      uses: github/codeql-action/upload-sarif@4fa2a7953630fd2f3fb380f21be14ede0169dd4f #3.25.12
       if: ${{ inputs.upload-sarif-to-security }}
       with:
         sarif_file: 'reports/checkov-results.sarif'
@@ -175,7 +175,7 @@ jobs:
   #   steps:
   #   -  
   #     name: "Download Docker tar"
-  #     uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e #4.1.7
+  #     uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 #4.1.8
   #     with:
   #       name: docker
   #       path: .
@@ -201,7 +201,7 @@ jobs:
   #       hide-progress: false
   #   - 
   #     name: "Upload Sarif report as artifact"
-  #     uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #4.3.3
+  #     uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b #4.3.4
   #     with:
   #       name: trivy-results
   #       path: trivy-results.sarif
@@ -227,7 +227,7 @@ jobs:
           github.com:443
 
     - name: Download Docker tar
-      uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e #4.1.7
+      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 #4.1.8
       with:
         name: build-docker-image
 
