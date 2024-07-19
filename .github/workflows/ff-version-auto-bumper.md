@@ -10,7 +10,7 @@ The variables defined under `with` section below are optional. They all have def
 ## Usage
 ``` yml
 update-ff-version:
-  uses: wearefrank/ci-cd-templates/.github/workflows/ff-version-auto-bumper.yml@main
+  uses: wearefrank/ci-cd-templates/.github/workflows/ff-version-auto-bumper.yml@e073950d36ffdeb9f018b14b2ca0c13449825b2f # 1.0.3
   secrets:
     # GitHub token to be used. The default '${{ secrets.GITHUB_TOKEN }}' or '${{ secrets.GH_TOKEN }}' is enough.
     token: ${{ secrets.GITHUB_TOKEN }}
@@ -22,7 +22,7 @@ update-ff-version:
     dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
   with:
     # F!F version tag requested to update in your project to. It has to be after 8.0.1(including)
-    # Default: '8.1'
+    # Default: 'latest'
     ff-version-tag: '8.1'
 
     # Regex for Dockerfile is used to find the line which has the version of FF in Dockerfile.
@@ -86,5 +86,31 @@ update-ff-version:
     update-customcode-enabled: true/false
 ```
 
+## Scenario's
+ [Automatically bump the Frank!Framework version on a weekly basis](#automatically-bump-the-frank!framework-version-on-a-weekly-basis)
 
+### Automatically bump the Frank!Framework version on a weekly basis
+``` yaml
+name: Bump F!F Version
 
+on:
+  workflow_dispatch:
+    schedule:
+      - cron: '0 5 * * 1' # At 05:00 on Monday.
+    workflow_dispatch:
+      inputs:
+        ff-version-tag:
+          description: 'F!F version tag requested to update in your project to. It has to be after 8.0.1(including).'    
+          required: false
+          default: 'latest'
+
+jobs:
+  bump-ff-version:
+    uses: wearefrank/ci-cd-templates/.github/workflows/ff-version-auto-bumper.yml@e073950d36ffdeb9f018b14b2ca0c13449825b2f # 1.0.3
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+      dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+    with:
+      ff-version-tag: ${{ github.event.inputs.ff-version-tag || 'latest' }}
+```
