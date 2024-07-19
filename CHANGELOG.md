@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [1.0.4](https://github.com/wearefrank/ci-cd-templates/compare/v1.0.3...v1.0.4) (2024-07-19)
+
+### 🐛 Bug Fixes
+
+* ff-version-auto-bumper missing semantic release tag in PR title ([6a4c140](https://github.com/wearefrank/ci-cd-templates/commit/6a4c140739b91e84cc2cc640e686d8f13fc09c30))
+
 ## [1.0.3](https://github.com/wearefrank/ci-cd-templates/compare/v1.0.2...v1.0.3) (2024-07-15)
 
 ### 🤖 Build System
