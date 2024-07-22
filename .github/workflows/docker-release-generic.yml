@@ -48,7 +48,7 @@ jobs:
       image-digest: ${{ steps.build.outputs.digest }}
       image-metadata: ${{ steps.build.outputs.metadata }}
     steps:
-    - uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+    - uses: step-security/harden-runner@0d381219ddf674d61a7572ddd19d7941e271515c # v2.9.0
       with:
         egress-policy: audit
         
@@ -95,7 +95,7 @@ jobs:
 
     - name: Build and export Docker image
       id: build
-      uses: docker/build-push-action@1a162644f9a7e87d8f4b053101d1d9a712edc18c #6.3.0
+      uses: docker/build-push-action@1ca370b3a9802c92e886402e0dd88098a2533b12 #6.4.1
       with:
         context: .
         platforms: linux/amd64, linux/arm64
