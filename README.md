@@ -22,3 +22,5 @@ GitHub reusable workflows:
 - [docker-release-generic](./.github/workflows/docker-release-generic.md)
     Runs the Docker container till the health endpoint returns 'HEALTHY', indicating that the database and adapters are all correctly started.
 
+- [ff-version-auto-bumper](./.github/workflows/ff-version-auto-bumper.md)
+    F!F version auto bumper workflow updates the Frank Framework version used in the project to the requested version (versions after 8.0.1). As default, the tag of the version is set to 'latest'.

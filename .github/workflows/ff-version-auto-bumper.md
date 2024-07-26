@@ -1,5 +1,5 @@
 # F!F Version Auto Bumper Workflow
-F!F version auto bumper workflow updates the Frank Framework version used in the project to the requested version (versions after 8.0.1). As default, the tag of the version is set to '8.1'.
+F!F version auto bumper workflow updates the Frank Framework version used in the project to the requested version (versions after 8.0.1). As default, the tag of the version is set to 'latest'.
 
 The version tags are updated as default in `Dockerfile`, `frankrunner.properties` and `docker-compose.zaakbrug.dev.yml` files which are located under the root directory of the project. However, if the file names and directories are different than the default values in a project, then it can be changed by passing the new values in 'with' section below but by using the fixed variable names. There are also toggles for each file to turn on or off the update so if any of these files are not wanted to be updated then set the toggle false for the relevant file. Shown in the usage below.
 
@@ -7,12 +7,14 @@ It also checks if there is an update in the custom code `Parameter.java` file th
 
 The variables defined under `with` section below are optional. They all have default values and if any of the default values doesn't fit to a project then it will just be skipped. For example in Zaakbrug project, F!F version tag is updated three different files; if a project needs to update F!F version in two files then the third one will be skipped lest to have an error. It is not possible to update four or more files for now. The workflow will be updated to make it more dynamic and configurable in order to have a workflow independent from any project to be able to update the F!F version in as many files as wanted.
 
+**WARNING: The GitHub token must be PAT(Personal Access Token) due to permission issues with automatically running CI in the created PR. A workaround when not using a PAT is to close and reopen the PR.**
+
 ## Usage
 ``` yml
 update-ff-version:
   uses: wearefrank/ci-cd-templates/.github/workflows/ff-version-auto-bumper.yml@e073950d36ffdeb9f018b14b2ca0c13449825b2f # 1.0.3
   secrets:
-    # GitHub token to be used. The default '${{ secrets.GITHUB_TOKEN }}' or '${{ secrets.GH_TOKEN }}' is enough.
+    # GitHub token to be used. Needs to be a PAT due to permission issues with automatically running CI in the created PR.
     token: ${{ secrets.GITHUB_TOKEN }}
 
     # DockerHub username with read/write to login to DockerHub.
@@ -97,18 +99,17 @@ on:
   workflow_dispatch:
     schedule:
       - cron: '0 5 * * 1' # At 05:00 on Monday.
-    workflow_dispatch:
-      inputs:
-        ff-version-tag:
-          description: 'F!F version tag requested to update in your project to. It has to be after 8.0.1(including).'    
-          required: false
-          default: 'latest'
+    inputs:
+      ff-version-tag:
+        description: 'F!F version tag requested to update in your project to. It has to be after 8.0.1(including).'    
+        required: true
+        default: 'latest'
 
 jobs:
   bump-ff-version:
     uses: wearefrank/ci-cd-templates/.github/workflows/ff-version-auto-bumper.yml@e073950d36ffdeb9f018b14b2ca0c13449825b2f # 1.0.3
     secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
+      token: ${{ secrets.PAT_TOKEN }} # Needs to be a PAT due to permission issues with automatically running CI in the created PR.
       dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
       dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
     with:
