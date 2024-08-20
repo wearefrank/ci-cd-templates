@@ -1,5 +1,15 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [1.0.6](https://github.com/wearefrank/ci-cd-templates/compare/v1.0.5...v1.0.6) (2024-08-20)
+
+### 🐛 Bug Fixes
+
+* print docker debugging commands step not triggered on failure ([9f7329f](https://github.com/wearefrank/ci-cd-templates/commit/9f7329fafc0db4c30178461682333ac50c10dd92))
+
+### 🤖 Build System
+
+* **dependencies:** bump the github-actions group across 1 directory with 3 updates ([#17](https://github.com/wearefrank/ci-cd-templates/issues/17)) ([e047286](https://github.com/wearefrank/ci-cd-templates/commit/e047286902d357e0807cfe8b83a61d664d780daf))
+
 ## [1.0.5](https://github.com/wearefrank/ci-cd-templates/compare/v1.0.4...v1.0.5) (2024-08-13)
 
 ### 🤖 Build System
