@@ -48,7 +48,7 @@ runs:
 
   - name: Docker inspect, stats and logs
     shell: bash
-    if: runner.debug == '1'
+    if: failure()
     run: |
       docker inspect test
       docker logs test
