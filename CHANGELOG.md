@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [1.0.7](https://github.com/wearefrank/ci-cd-templates/compare/v1.0.6...v1.0.7) (2024-08-30)
+
+### 🤖 Build System
+
+* **dependencies:** bump the github-actions group across 1 directory with 2 updates ([#19](https://github.com/wearefrank/ci-cd-templates/issues/19)) ([067eb8b](https://github.com/wearefrank/ci-cd-templates/commit/067eb8b501be0b37663ed3a9d360941a49852cdb))
+
 ## [1.0.6](https://github.com/wearefrank/ci-cd-templates/compare/v1.0.5...v1.0.6) (2024-08-20)
 
 ### 🐛 Bug Fixes
