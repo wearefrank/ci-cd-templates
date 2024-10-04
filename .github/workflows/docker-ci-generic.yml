@@ -73,7 +73,7 @@ jobs:
           registry-1.docker.io:443
 
     - name: Checkout
-      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #4.1.7
+      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 #4.2.0
 
     - name: "Download Pre-build Artifacts"
       uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 #4.1.8
@@ -105,11 +105,11 @@ jobs:
       uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf #3.2.0
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@988b5a0280414f521da01fcc63a27aeeb4b104db #3.6.1
+      uses: docker/setup-buildx-action@8026d2bc3645ea78b0d2544766a1225eb5691f89 #3.7.0
 
     - name: Build and export Docker image
       id: build
-      uses: docker/build-push-action@5cd11c3a4ced054e52742c5fd54dca954e0edd85 #6.7.0
+      uses: docker/build-push-action@4f58ea79222b3b9dc2c8bbdd6debcef730109a75 #6.9.0
       with:
         context: .
         platforms: linux/amd64
@@ -142,11 +142,11 @@ jobs:
           pypi.org:443
 
     - name: Checkout
-      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #4.1.7
+      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 #4.2.0
 
     - name: Lint Dockerfile with Checkov
       id: checkov
-      uses: bridgecrewio/checkov-action@15c964c5bee933376cc576908ccfad6687718c8e #12.2871.0
+      uses: bridgecrewio/checkov-action@4dda818f6a2f8b4b98178b09d90651086234a6e5 #12.2874.0
       with:
         directory: .
         framework: dockerfile
@@ -164,7 +164,7 @@ jobs:
         path: reports/checkov-results.sarif
 
     - name: Upload to GitHub Security
-      uses: github/codeql-action/upload-sarif@4dd16135b69a43b6c8efb853346f8437d92d3c93 #3.26.6
+      uses: github/codeql-action/upload-sarif@6db8d6351fd0be61f9ed8ebd12ccd35dcec51fea #3.26.11
       if: ${{ inputs.upload-sarif-to-security }}
       with:
         sarif_file: 'reports/checkov-results.sarif'
@@ -237,7 +237,7 @@ jobs:
         docker load --input image.tar
 
     - name: Checkout
-      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 #4.1.7
+      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 #4.2.0
       with:
         token: ${{ secrets.token }}
 
