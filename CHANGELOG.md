@@ -1,5 +1,15 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [1.0.11](https://github.com/wearefrank/ci-cd-templates/compare/v1.0.10...v1.0.11) (2024-10-28)
+
+### 🐛 Bug Fixes
+
+* ff-version-auto-bumper workflow pr creation failing due to wrong branchname ([b97427b](https://github.com/wearefrank/ci-cd-templates/commit/b97427b39fe8061454cea75de44bc48db959c503))
+
+### 🤖 Build System
+
+* **dependencies:** bump the github-actions group across 1 directory with 4 updates ([#28](https://github.com/wearefrank/ci-cd-templates/issues/28)) ([86dec0a](https://github.com/wearefrank/ci-cd-templates/commit/86dec0a9dd529fdd832407f0553b2fc937317206))
+
 ## [1.0.10](https://github.com/wearefrank/ci-cd-templates/compare/v1.0.9...v1.0.10) (2024-10-16)
 
 ### 🤖 Build System
