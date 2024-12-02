@@ -61,7 +61,7 @@ jobs:
       image-digest: ${{ steps.build.outputs.digest }}
       image-metadata: ${{ steps.build.outputs.metadata }}
     steps:
-    - uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+    - uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
       with:
         disable-sudo: true
         egress-policy: audit
@@ -89,7 +89,7 @@ jobs:
 
     - name: Extract Docker metadata
       id: meta
-      uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81 #5.5.1
+      uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96 #5.6.1
       with:
         images: ${{ inputs.docker-image-repo }}/${{ inputs.docker-image-name }}
         tags: |
@@ -109,7 +109,7 @@ jobs:
 
     - name: Build and export Docker image
       id: build
-      uses: docker/build-push-action@4f58ea79222b3b9dc2c8bbdd6debcef730109a75 #6.9.0
+      uses: docker/build-push-action@48aba3b46d1b1fec4febb7c5d0c644b249a11355 #6.10.0
       with:
         context: .
         platforms: linux/amd64
@@ -133,7 +133,7 @@ jobs:
       contents: read 
     if: inputs.chekov-linter-enabled
     steps:
-    - uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+    - uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
       with:
         disable-sudo: true
         egress-policy: audit
@@ -146,7 +146,7 @@ jobs:
 
     - name: Lint Dockerfile with Checkov
       id: checkov
-      uses: bridgecrewio/checkov-action@a36096a3a272a684d48058e101498cddb9a1599d #12.2884.0
+      uses: bridgecrewio/checkov-action@b8f970b660bc01f598fc2f108eabd9e8dee728f8 #12.2924.0
       with:
         directory: .
         framework: dockerfile
@@ -164,7 +164,7 @@ jobs:
         path: reports/checkov-results.sarif
 
     - name: Upload to GitHub Security
-      uses: github/codeql-action/upload-sarif@662472033e021d55d94146f66f6058822b0b39fd #3.27.0
+      uses: github/codeql-action/upload-sarif@f09c1c0a94de965c15400f5634aa42fac8fb8f88 #3.27.5
       if: ${{ inputs.upload-sarif-to-security }}
       with:
         sarif_file: 'reports/checkov-results.sarif'
@@ -219,7 +219,7 @@ jobs:
     if: inputs.run-frank-till-healthy-enabled
     needs: build
     steps:
-    - uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+    - uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
       with:
         disable-sudo: true
         egress-policy: audit
