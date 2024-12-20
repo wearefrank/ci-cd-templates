@@ -105,7 +105,7 @@ jobs:
       uses: docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf #3.2.0
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349 #3.7.1
+      uses: docker/setup-buildx-action@6524bf65af31da8d45b59e8c27de4bd072b392f5 #3.8.0
 
     - name: Build and export Docker image
       id: build
@@ -121,7 +121,7 @@ jobs:
         cache-to: type=gha,mode=max
 
     - name: "Upload Docker tar"
-      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 #4.4.3
+      uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b #4.5.0
       with:
         name: build-docker-image
         path: ./image.tar
@@ -146,7 +146,7 @@ jobs:
 
     - name: Lint Dockerfile with Checkov
       id: checkov
-      uses: bridgecrewio/checkov-action@84f8bb70bc02d86035371e5a5dd568e19d44281b #12.2934.0
+      uses: bridgecrewio/checkov-action@66419f9444e2736cf7e36b4789a2a39fe93c8b92 #12.2939.0
       with:
         directory: .
         framework: dockerfile
@@ -158,7 +158,7 @@ jobs:
         output_file_path: reports/checkov-results.sarif
 
     - name: Upload Sarif report as artifact
-      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 #4.4.3
+      uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b #4.5.0
       with:
         name: checkov-results
         path: reports/checkov-results.sarif
@@ -201,7 +201,7 @@ jobs:
   #       hide-progress: false
   #   - 
   #     name: "Upload Sarif report as artifact"
-  #     uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 #4.4.3
+  #     uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b #4.5.0
   #     with:
   #       name: trivy-results
   #       path: trivy-results.sarif
