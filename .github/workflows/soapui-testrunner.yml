@@ -155,7 +155,7 @@ jobs:
         env:
           IMAGE_ID: ${{inputs.image-id}}
           IMAGE_TAG: ${{inputs.image-name}}
-        run: ${{inputs.setup-script}}
+        run: "${{inputs.setup-script}}"
       
       - name: Wait Till Healthy Container
         id: wait-till-healthy
@@ -180,4 +180,4 @@ jobs:
         shell: bash
         env:
           CONTAINER_ID: ${{steps.wait-till-healthy.outputs.container-id}}
-        run: ${{inputs.teardown-script}}
+        run: "${{inputs.teardown-script}}"
