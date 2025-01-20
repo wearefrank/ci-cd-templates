@@ -146,7 +146,7 @@ jobs:
         env:
           TARBALL_FILE: ${{inputs.image-tarball-file}}
         run: |
-          docker load --input $TARBALL_FILE
+          docker load --input "$TARBALL_FILE"
           docker ps -a
 
       - name: Setup Test Environment
