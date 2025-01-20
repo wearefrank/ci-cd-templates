@@ -26,6 +26,10 @@ inputs:
       Default: 300
     required: false
     default: '300'
+outputs:
+  container-id:
+    description: Id of the Docker Container that was waited on to report healthy status.
+    value: ${{inputs.container-id || steps.from-image-id.outputs.container-id || steps.from-image-name.outputs.container-id}}
 
 runs:
   using: "composite"
