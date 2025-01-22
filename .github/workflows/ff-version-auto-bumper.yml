@@ -105,7 +105,7 @@ jobs:
       run: |
         EXISTING_PRS=$(gh pr list -S 'type:pr is:open build(dependencies): bump f!f version to in:title' --json 'url,title,headRefName')
         echo "existing-prs=$EXISTING_PRS" >> "$GITHUB_ENV"
-        echo "Exsting PR's: [$EXISTING_PRS]"
+        echo "Existing PR's: [$EXISTING_PRS]"
 
     - name: Obtain F!F Image Tag From OCI Label
       run: |
