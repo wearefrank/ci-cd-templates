@@ -159,13 +159,13 @@ jobs:
       
       - name: Wait Till Healthy Container
         id: wait-till-healthy
-        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@1
+        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@310f8c660cb60a908aa9aac08e4d846e7239c796 #1.2.0
         with:
           image-id: ${{inputs.image-id}}
           image-name: ${{inputs.image-name}}
 
       - name: SoapUI TestRunner
-        uses: wearefrank/ci-cd-templates/soapui-testrunner@1
+        uses: wearefrank/ci-cd-templates/soapui-testrunner@310f8c660cb60a908aa9aac08e4d846e7239c796 #1.2.0
         timeout-minutes: 15
         with:
           project-dir: ${{inputs.project-dir}}
