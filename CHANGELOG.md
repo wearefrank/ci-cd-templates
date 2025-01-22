@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [1.3.0](https://github.com/wearefrank/ci-cd-templates/compare/v1.2.0...v1.3.0) (2025-01-22)
+
+### 🍕 Features
+
+* soapui testrunner reusable workflow ([#45](https://github.com/wearefrank/ci-cd-templates/issues/45)) ([691e0f5](https://github.com/wearefrank/ci-cd-templates/commit/691e0f5f4eeb6e892a1a077989f015a3544ff13c))
+
 ## [1.2.0](https://github.com/wearefrank/ci-cd-templates/compare/v1.1.0...v1.2.0) (2025-01-22)
 
 ### 🍕 Features
