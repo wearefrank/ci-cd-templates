@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [1.1.0](https://github.com/wearefrank/ci-cd-templates/compare/v1.0.15...v1.1.0) (2025-01-22)
+
+### 🍕 Features
+
+* wait till healthy container github action ([#42](https://github.com/wearefrank/ci-cd-templates/issues/42)) ([751212f](https://github.com/wearefrank/ci-cd-templates/commit/751212f93545daa556e6426ce4c3233c190fe144))
+
 ## [1.0.15](https://github.com/wearefrank/ci-cd-templates/compare/v1.0.14...v1.0.15) (2025-01-10)
 
 ### 🤖 Build System
