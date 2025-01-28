@@ -1,5 +1,19 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [1.4.0](https://github.com/wearefrank/ci-cd-templates/compare/v1.3.0...v1.4.0) (2025-01-28)
+
+### 🍕 Features
+
+* ff version bumper workflow cleans up superseded PR's and branches ([9e8bac0](https://github.com/wearefrank/ci-cd-templates/commit/9e8bac0f0033b7a4e491f5cead601b89060b1c99))
+
+### 🐛 Bug Fixes
+
+* ff version bumper format PR title with conventional commit tag instead of using the branch name ([6b4996c](https://github.com/wearefrank/ci-cd-templates/commit/6b4996ca7899e8ada98fd94878ee41ce18b52531))
+
+### 🤖 Build System
+
+* **dependencies:** bump the github-actions group across 1 directory with 5 updates ([92950de](https://github.com/wearefrank/ci-cd-templates/commit/92950ded1465e27d2082ba9220d46d93225447a9))
+
 ## [1.3.0](https://github.com/wearefrank/ci-cd-templates/compare/v1.2.0...v1.3.0) (2025-01-22)
 
 ### 🍕 Features
