@@ -147,7 +147,7 @@ jobs:
           TARBALL_FILE: ${{inputs.image-tarball-file}}
         run: |
           docker load --input "$TARBALL_FILE"
-          docker ps -a
+          docker images -a
 
       - name: Setup Test Environment
         if: inputs.setup-script != ''
