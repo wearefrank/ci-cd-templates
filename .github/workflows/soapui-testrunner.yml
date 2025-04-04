@@ -83,7 +83,7 @@ on:
           the container id of the application under test.
 
           Only one of `image-id` or `image-name` is required, but both are allowed.
-        required: true
+        required: false
       setup-script:
         type: string
         description: >
