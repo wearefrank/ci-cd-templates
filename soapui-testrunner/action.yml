@@ -72,19 +72,20 @@ runs:
       id: run-testrunner
       shell: bash
       env:
-        PROJECT_DIR: ${{inputs.project-dir}}
-        REPORTS_DIR: ${{inputs.project-dir}}/${{inputs.reports-dir}}
         SOAPUI_PROJECT: ${{inputs.soapui-project}}
         SOAPUI_VERSION: ${{inputs.soapui-version}}
         SOAPUI_CMD_OPTIONS_ARGS: ${{inputs.soapui-cmd-options-args}}
         GLOBAL_PROPS: ${{steps.global-props.outputs.global-props}}
       run: |
         set -eux
+
+        eval PROJECT_DIR=${{inputs.project-dir}}
+        eval REPORTS_DIR=${{inputs.project-dir}}/${{inputs.reports-dir}}
         
         SOAPUI_CONTAINER_ID=$(docker run \
           -d \
-          -v=$PROJECT_DIR:/project \
-          -v=$REPORTS_DIR:/reports \
+          -v ${PROJECT_DIR}:/project \
+          -v ${REPORTS_DIR}:/reports \
           --network host \
           -e COMMAND_LINE="-f/%reports% /%project%/$SOAPUI_PROJECT $SOAPUI_CMD_OPTIONS_ARGS $GLOBAL_PROPS" \
           smartbear/soapuios-testrunner:$SOAPUI_VERSION)
