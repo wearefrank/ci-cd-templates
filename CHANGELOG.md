@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [1.4.2](https://github.com/wearefrank/ci-cd-templates/compare/v1.4.1...v1.4.2) (2025-04-04)
+
+### 🤖 Build System
+
+* **dependencies:** lock soapui-testrunner action call to comit sha ([b645321](https://github.com/wearefrank/ci-cd-templates/commit/b645321683c686e157c9064d7167c48dfe399bbb))
+
 ## [1.4.1](https://github.com/wearefrank/ci-cd-templates/compare/v1.4.0...v1.4.1) (2025-04-04)
 
 ### 🐛 Bug Fixes
