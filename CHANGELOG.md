@@ -1,5 +1,13 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [1.4.1](https://github.com/wearefrank/ci-cd-templates/compare/v1.4.0...v1.4.1) (2025-04-04)
+
+### 🐛 Bug Fixes
+
+* command to show loaded docker images uses "docker ps" instead of "docker images" ([a39ff21](https://github.com/wearefrank/ci-cd-templates/commit/a39ff213decd35421d6437215394dcc0412ae141))
+* image-name is unintentionally required while not needed when image-id is provided ([979e2d0](https://github.com/wearefrank/ci-cd-templates/commit/979e2d04f5947a647b7fd38a5412a713f948f15d))
+* soapui testrunner action PROJECT_DIR and REPORTS_DIR eval vars due to GHA adding invisible quotes ([b9c0de3](https://github.com/wearefrank/ci-cd-templates/commit/b9c0de3caad75fb662139e0a93fc3b875b3a3e0c))
+
 ## [1.4.0](https://github.com/wearefrank/ci-cd-templates/compare/v1.3.0...v1.4.0) (2025-01-28)
 
 ### 🍕 Features
