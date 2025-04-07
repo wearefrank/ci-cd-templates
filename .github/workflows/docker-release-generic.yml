@@ -31,9 +31,9 @@ on:
     secrets:
       token:
         required: false
-      dockerhub-username:
+      registry-username:
         required: false
-      dockerhub-token:
+      registry-token:
         required: false
     outputs:
       image-id: 
