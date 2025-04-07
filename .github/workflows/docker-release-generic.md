@@ -50,6 +50,13 @@ docker-release:
     # DockerHub token with read/write to login to DockerHub.
     dockerhub-token: ${{ secrets.dockerhub-token }}
   with:
+
+    # Docker image registry prefix.
+    # Default: 'ghcr.io/'
+    # Example: 'docker.io/' for Docker Hub.
+    # Example: 'ghcr.io/' for GitHub Container Registry. (default)
+    registry-prefix: 'docker.io/'
+    
     # Docker image repository without 'docker.io/' for example.
     # Default: GitHub repository owner/organisation.
     docker-image-repo: 'wearefrank'
