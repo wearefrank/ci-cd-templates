@@ -96,8 +96,8 @@ jobs:
       uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # 3.3.0
       with:
         registry: ${{ inputs.registry-prefix }}
-        username: ${{ secrets.registry-username }}
-        password: ${{ secrets.registry-token }}
+        username: ${{ secrets.registry-username == '' && github.actor || inputs.registry-username }}
+        password: ${{ inputs.registry-token == '' && inputs.registry-prefix == 'ghcr.io' && secrets.token || inputs.registry-token }}
 
     - name: Build and export Docker image
       id: build
