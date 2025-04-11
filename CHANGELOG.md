@@ -1,5 +1,15 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.0.0](https://github.com/wearefrank/ci-cd-templates/compare/v1.4.2...v2.0.0) (2025-04-11)
+
+### ⚠ BREAKING CHANGES
+
+* docker-release-generic inputs 'dockerhub-username' and 'dockerhub-password' renamed to 'registry-username' and 'registry-token'. Default registry changed from DockerHub to GitHub Packages. To get the old behavior, set 'registry-prefix: docker.io'.
+
+### 🍕 Features
+
+* support pushing Docker images to GitHub image registry ([#55](https://github.com/wearefrank/ci-cd-templates/issues/55)) ([dcc2ebd](https://github.com/wearefrank/ci-cd-templates/commit/dcc2ebd6658cd1bd7b3b78fc97f6e3bc6f0d6ba0))
+
 ## [1.4.2](https://github.com/wearefrank/ci-cd-templates/compare/v1.4.1...v1.4.2) (2025-04-04)
 
 ### 🤖 Build System
