@@ -51,7 +51,7 @@ jobs:
     permissions:
       contents: read    
     steps:
-    - uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+    - uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf # v2.11.1
       with:
         disable-sudo: true
         egress-policy: audit
@@ -68,7 +68,7 @@ jobs:
         version: ${{ inputs.version }}
 
     - name: Upload Instance BuildInfo.properties
-      uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 #4.6.0
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #4.6.2
       with:
         name: pre-build-instance-buildinfo
         path: ./*/main/resources/BuildInfo.properties
