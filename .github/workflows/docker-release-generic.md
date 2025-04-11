@@ -44,12 +44,19 @@ docker-release:
     # GitHub token to be used. The default '${{ secrets.GITHUB_TOKEN }}' or '${{ secrets.GH_TOKEN }}' is enough.
     token: ${{ secrets.GITHUB_TOKEN }}
 
-    # DockerHub username with read/write to login to DockerHub.
-    dockerhub-username: ${{ secrets.dockerhub-username }}
+    # registry username with read/write to login to the registry.
+    registry-username: ${{ secrets.dockerhub-username }}
 
-    # DockerHub token with read/write to login to DockerHub.
-    dockerhub-token: ${{ secrets.dockerhub-token }}
+    # registry token with read/write to login to the registry.
+    registry-token: ${{ secrets.dockerhub-token }}
   with:
+
+    # Docker image registry prefix.
+    # Default: 'ghcr.io/'
+    # Example: 'docker.io/' for Docker Hub.
+    # Example: 'ghcr.io/' for GitHub Container Registry. (default)
+    registry-prefix: 'docker.io/'
+    
     # Docker image repository without 'docker.io/' for example.
     # Default: GitHub repository owner/organisation.
     docker-image-repo: 'wearefrank'

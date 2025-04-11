@@ -3,6 +3,11 @@ name: "Docker Release - Generic"
 on:
   workflow_call:
     inputs:
+      registry-prefix:
+        description: Image registry prefix (e.g. ghcr.io, docker.io)
+        type: string
+        required: false
+        default: 'ghcr.io'
       docker-image-repo:
         description: Docker image repository. Default -> GitHub repository owner/organisation.
         type: string
@@ -26,9 +31,9 @@ on:
     secrets:
       token:
         required: false
-      dockerhub-username:
+      registry-username:
         required: false
-      dockerhub-token:
+      registry-token:
         required: false
     outputs:
       image-id: 
@@ -90,8 +95,9 @@ jobs:
     - name: Login to Container Registry
       uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # 3.3.0
       with:
-        username: ${{ secrets.dockerhub-username }}
-        password: ${{ secrets.dockerhub-token }}
+        registry: ${{ inputs.registry-prefix }}
+        username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
+        password: ${{ secrets.registry-token == '' && inputs.registry-prefix == 'ghcr.io' && secrets.token || secrets.registry-token }}
 
     - name: Build and export Docker image
       id: build
