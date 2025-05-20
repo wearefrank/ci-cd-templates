@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.0.2](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.1...v2.0.2) (2025-05-20)
+
+### 🤖 Build System
+
+* **dependencies:** lock soapui-testrunner action to commit hash ([cec7d4d](https://github.com/wearefrank/ci-cd-templates/commit/cec7d4db55523dc751e9c7ffdab8260dd2b2410b))
+
 ## [2.0.1](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.0...v2.0.1) (2025-05-20)
 
 ### 🧑‍💻 Code Refactoring
