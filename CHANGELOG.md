@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.0.1](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.0...v2.0.1) (2025-05-20)
+
+### 🧑‍💻 Code Refactoring
+
+* soapui-runner configurable testreport artifact name ([8e19477](https://github.com/wearefrank/ci-cd-templates/commit/8e1947770751815c69cf5ef4f178e1ed188e5cfc))
+
 ## [2.0.0](https://github.com/wearefrank/ci-cd-templates/compare/v1.4.2...v2.0.0) (2025-04-11)
 
 ### ⚠ BREAKING CHANGES
