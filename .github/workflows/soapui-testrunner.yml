@@ -121,6 +121,22 @@ on:
             docker stop ${IMAGE_ID:-${IMAGE_TAG:-<organisation>/<image-name>}}
           ```
         required: false
+      upload-reports-artifact:
+        type: boolean
+        description: >
+          When 'true', the SoapUI reports will be uploaded as a GitHub Artifact
+
+          Default: true
+        required: false
+        default: true
+      reports-artifact-name:
+        type: string
+        description: >
+          Name of the GitHub Artifact the SoapUI reports should be uploaded under.
+
+          Default: reports-soapui-testreports
+        required: false
+        default: 'reports-soapui-testreports'
     secrets:
       token:
         required: true
@@ -165,7 +181,7 @@ jobs:
           image-name: ${{inputs.image-name}}
 
       - name: SoapUI TestRunner
-        uses: wearefrank/ci-cd-templates/soapui-testrunner@818c296f71c574dded172c26cba43f46e0732a17 #1.4.1
+        uses: wearefrank/ci-cd-templates/soapui-testrunner@main
         timeout-minutes: 15
         with:
           project-dir: ${{inputs.project-dir}}
@@ -174,6 +190,8 @@ jobs:
           properties-file: ${{inputs.properties-file}}
           soapui-cmd-options-args: ${{inputs.soapui-cmd-options-args}}
           soapui-version: ${{inputs.soapui-version}}
+          upload-reports-artifact: ${{inputs.upload-reports-artifact}}
+          reports-artifact-name: ${{inputs.reports-artifact-name}}
       
       - name: Teardown Test Environment
         if: inputs.teardown-script != ''

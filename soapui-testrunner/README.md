@@ -46,6 +46,16 @@ offset back to the actual project root.
     #
     # Default: latest
     soapui-version: 'latest'
+
+    # When 'true', the SoapUI reports will be uploaded as a GitHub Artifact
+    #
+    # Default: true
+    upload-reports-artifact: true
+
+    # Name of the GitHub Artifact the SoapUI reports should be uploaded under.
+    #
+    # Default: reports-soapui-testreports
+    reports-artifact-name: 'reports-soapui-testreports'
 ```
 
 ## Scenario's
