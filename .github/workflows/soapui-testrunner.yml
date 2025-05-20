@@ -181,7 +181,7 @@ jobs:
           image-name: ${{inputs.image-name}}
 
       - name: SoapUI TestRunner
-        uses: wearefrank/ci-cd-templates/soapui-testrunner@818c296f71c574dded172c26cba43f46e0732a17 #1.4.1
+        uses: wearefrank/ci-cd-templates/soapui-testrunner@soapui-runner-artifact-name
         timeout-minutes: 15
         with:
           project-dir: ${{inputs.project-dir}}
