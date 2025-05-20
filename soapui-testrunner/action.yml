@@ -46,6 +46,20 @@ inputs:
       Default: latest
     required: true
     default: 'latest'
+  upload-reports-artifact:
+    description: >
+      When 'true', the SoapUI reports will be uploaded as a GitHub Artifact
+
+      Default: true
+    required: true
+    default: true
+  reports-artifact-name:
+    description: >
+      Name of the GitHub Artifact the SoapUI reports should be uploaded under.
+
+      Default: reports-soapui-testreports
+    required: true
+    default: 'reports-soapui-testreports'
 
 runs:
   using: "composite"
@@ -125,8 +139,8 @@ runs:
 
     - name: Upload SoapUI Test Reports as artifact
       uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 #4.4.3
-      if: always()
+      if: ${{inputs.upload-reports-artifact}}
       with:
-        name: reports-soapui-testreports
+        name: ${{inputs.reports-artifact-name}}
         path: ${{inputs.reports-dir}}
         
