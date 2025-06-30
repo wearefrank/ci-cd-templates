@@ -76,7 +76,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96 #5.6.1
       with:
-        images: ${{ inputs.docker-image-repo }}/${{ inputs.docker-image-name }}
+        images: ${{ inputs.registry-prefix }}/${{ inputs.docker-image-repo }}/${{ inputs.docker-image-name }}
         tags: |
           type=semver,pattern={{version}},value=${{ inputs.version }}
           type=semver,pattern={{major}}.{{minor}},value=${{ inputs.version }}
