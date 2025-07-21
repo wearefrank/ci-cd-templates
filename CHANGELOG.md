@@ -1,5 +1,23 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.0.3](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.2...v2.0.3) (2025-06-30)
+
+### 🐛 Bug Fixes
+
+* add registry to image tag ([a0ae52e](https://github.com/wearefrank/ci-cd-templates/commit/a0ae52e285f839b6b952ec8526fe9b3bbb9bf27e))
+
+## [2.0.2](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.1...v2.0.2) (2025-05-20)
+
+### 🤖 Build System
+
+* **dependencies:** lock soapui-testrunner action to commit hash ([cec7d4d](https://github.com/wearefrank/ci-cd-templates/commit/cec7d4db55523dc751e9c7ffdab8260dd2b2410b))
+
+## [2.0.1](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.0...v2.0.1) (2025-05-20)
+
+### 🧑‍💻 Code Refactoring
+
+* soapui-runner configurable testreport artifact name ([8e19477](https://github.com/wearefrank/ci-cd-templates/commit/8e1947770751815c69cf5ef4f178e1ed188e5cfc))
+
 ## [2.0.0](https://github.com/wearefrank/ci-cd-templates/compare/v1.4.2...v2.0.0) (2025-04-11)
 
 ### ⚠ BREAKING CHANGES
