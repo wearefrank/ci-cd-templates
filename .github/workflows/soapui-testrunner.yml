@@ -151,7 +151,7 @@ jobs:
           token: ${{secrets.token}}
 
       - name: Download Docker tar
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e #4.2.1
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #5.0.0
         if: inputs.image-build-artifact-name != ''
         with:
           name: ${{inputs.image-build-artifact-name}}
@@ -175,13 +175,13 @@ jobs:
       
       - name: Wait Till Healthy Container
         id: wait-till-healthy
-        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@2f83b83141c47c3141586b6d6abd5f4bd2dffee7 #2.0.0
+        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@e89e41bafa1b61a03984af9a3c9fe0ab87943c1f #2.0.4
         with:
           image-id: ${{inputs.image-id}}
           image-name: ${{inputs.image-name}}
 
       - name: SoapUI TestRunner
-        uses: wearefrank/ci-cd-templates/soapui-testrunner@8e1947770751815c69cf5ef4f178e1ed188e5cfc #2.0.1
+        uses: wearefrank/ci-cd-templates/soapui-testrunner@e89e41bafa1b61a03984af9a3c9fe0ab87943c1f #2.0.1
         timeout-minutes: 15
         with:
           project-dir: ${{inputs.project-dir}}
