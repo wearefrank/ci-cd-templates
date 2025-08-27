@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.0.5](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.4...v2.0.5) (2025-08-27)
+
+### 🐛 Bug Fixes
+
+* execute soapui-testrunner workflow teardown script when soapui tests fail aswell ([309eb5c](https://github.com/wearefrank/ci-cd-templates/commit/309eb5cee1d4b5095fbc7202e7a1efb7eee372cb))
+
 ## [2.0.4](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.3...v2.0.4) (2025-07-21)
 
 ### 🤖 Build System
