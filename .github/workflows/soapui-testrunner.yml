@@ -194,7 +194,7 @@ jobs:
           reports-artifact-name: ${{inputs.reports-artifact-name}}
       
       - name: Teardown Test Environment
-        if: inputs.teardown-script != ''
+        if: always() && inputs.teardown-script != ''
         shell: bash
         env:
           CONTAINER_ID: ${{steps.wait-till-healthy.outputs.container-id}}
