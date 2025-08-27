@@ -193,6 +193,16 @@ jobs:
           upload-reports-artifact: ${{inputs.upload-reports-artifact}}
           reports-artifact-name: ${{inputs.reports-artifact-name}}
       
+      - name: Docker inspect, stats and logs
+        if: failure() || runner.debug == '1'
+        env:
+          CONTAINER_ID: ${{steps.wait-till-healthy.outputs.container-id}}
+        shell: bash
+        run: |
+          docker inspect $CONTAINER_ID
+          docker logs $CONTAINER_ID
+          docker stats --no-stream $CONTAINER_ID
+      
       - name: Teardown Test Environment
         if: always() && inputs.teardown-script != ''
         shell: bash
