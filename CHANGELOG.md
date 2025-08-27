@@ -1,5 +1,15 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.0.6](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.5...v2.0.6) (2025-08-27)
+
+### 🎨 Styles
+
+* add quotes around env variable references in scripts ([5b9cd5a](https://github.com/wearefrank/ci-cd-templates/commit/5b9cd5a0c10f8cd65a6c57866e9a3f8259cd3657))
+
+### 🧑‍💻 Code Refactoring
+
+* print addition troubleshooting context to console when soapui-testrunner fails or when the pipeline is run in debug mode ([b67ba36](https://github.com/wearefrank/ci-cd-templates/commit/b67ba36d02c127d676c7fbf917add9015ed37d77))
+
 ## [2.0.5](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.4...v2.0.5) (2025-08-27)
 
 ### 🐛 Bug Fixes
