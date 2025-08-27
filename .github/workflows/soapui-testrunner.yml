@@ -199,9 +199,9 @@ jobs:
           CONTAINER_ID: ${{steps.wait-till-healthy.outputs.container-id}}
         shell: bash
         run: |
-          docker inspect $CONTAINER_ID
-          docker logs $CONTAINER_ID
-          docker stats --no-stream $CONTAINER_ID
+          docker inspect "$CONTAINER_ID"
+          docker logs "$CONTAINER_ID"
+          docker stats --no-stream "$CONTAINER_ID"
       
       - name: Teardown Test Environment
         if: always() && inputs.teardown-script != ''
