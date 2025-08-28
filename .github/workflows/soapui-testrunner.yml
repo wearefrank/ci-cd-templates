@@ -8,7 +8,7 @@ on:
         description: >
           Name of the build artifact uploaded in a previous job that contains the exported Tarball of the built Docker Image.
 
-          When loading the image from a Tarball the `image-tarball-file` also needs to be provided.
+          When loading the image from a Tarball the `image-tarball-file` also needs to be provided. 
         required: false
       image-tarball-file:
         type: string
