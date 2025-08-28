@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.0.8](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.7...v2.0.8) (2025-08-28)
+
+### 🔁 Continuous Integration
+
+* **dependencies:** bump soapui-runner action to v2.0.7 in soapui-testrunner workflow ([6ee0d9c](https://github.com/wearefrank/ci-cd-templates/commit/6ee0d9ce813e172a267848a752c2d444aa62baf3))
+
 ## [2.0.7](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.6...v2.0.7) (2025-08-28)
 
 ### 🐛 Bug Fixes
