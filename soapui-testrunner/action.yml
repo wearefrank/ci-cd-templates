@@ -139,7 +139,7 @@ runs:
 
     - name: Upload SoapUI Test Reports as artifact
       uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 #4.4.3
-      if: ${{inputs.upload-reports-artifact}}
+      if: always() && inputs.upload-reports-artifact
       with:
         name: ${{inputs.reports-artifact-name}}
         path: ${{inputs.reports-dir}}
