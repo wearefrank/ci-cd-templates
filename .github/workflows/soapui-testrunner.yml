@@ -146,12 +146,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 #4.2.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #5.0.0
         with:
           token: ${{secrets.token}}
 
       - name: Download Docker tar
-        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e #4.2.1
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #5.0.0
         if: inputs.image-build-artifact-name != ''
         with:
           name: ${{inputs.image-build-artifact-name}}
@@ -175,13 +175,13 @@ jobs:
       
       - name: Wait Till Healthy Container
         id: wait-till-healthy
-        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@2f83b83141c47c3141586b6d6abd5f4bd2dffee7 #2.0.0
+        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@791982d73eea13b903eb3bac672915e1337d14a0 #2.0.8
         with:
           image-id: ${{inputs.image-id}}
           image-name: ${{inputs.image-name}}
 
       - name: SoapUI TestRunner
-        uses: wearefrank/ci-cd-templates/soapui-testrunner@e336eae9ed5c96c1b9a89b07268f1ab508bcd5e2 #2.0.7
+        uses: wearefrank/ci-cd-templates/soapui-testrunner@791982d73eea13b903eb3bac672915e1337d14a0 #2.0.8
         timeout-minutes: 15
         with:
           project-dir: ${{inputs.project-dir}}
