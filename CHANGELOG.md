@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.0.7](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.6...v2.0.7) (2025-08-28)
+
+### 🐛 Bug Fixes
+
+* upload soapui report artifact on both success and faillure as long as a report exists and report artifact upload is enabled in soapui-runner action ([898e9d9](https://github.com/wearefrank/ci-cd-templates/commit/898e9d924cbb3defc2b5814a3c67be059bd61bbb))
+
 ## [2.0.6](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.5...v2.0.6) (2025-08-27)
 
 ### 🎨 Styles
