@@ -1,0 +1,85 @@
+name: "Delete Workflow Artifacts"
+description: "Deletes one or more artifacts uploaded in the given workflow run by name"
+inputs:
+  artifact-names:
+    description: >
+      Comma-seperated list of artifact names uploaded in the target workflow run that should be deleted.
+      Supports wildcard patterns using `*` and `?` (e.g. `report-?, build-*`).
+    required: true
+  workflow-run-id:
+    description: >
+      Workflow run id of the workflow run that produced the artifacts to be deleted.
+    required: true
+  token:
+    description: >
+      GitHub Token with permissions to delete artifacts in the target repository.
+
+      Default: ${github.token}
+    default: ${github.token}
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+  - name: Delete Artifacts
+    uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+    with:
+      github-token: ${{ input.token }}
+      env:
+        ARTIFACT_NAMES: ${{ input.artifact-names }}
+        WORKFLOW_RUN_ID: ${{ input. workflow-run-id }}
+      script: |
+        function wildcardMatchRegExp(text, pattern) {
+          const regexPattern = new RegExp("^" + pattern.replace(/\?/g, ".").replace(/\*/g, ".*") + "$");
+          return regexPattern.test(text);
+        }
+
+        let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            run_id: process.env.WORKFLOW_RUN_ID
+        });
+        
+        if(!allArtifacts || allArtifacts.data.artifacts.length === 0) {
+          console.log("Workflow produced no artifacts this run.");
+          return;
+        }
+
+        if(!process.env.ARTIFACT_NAMES) {
+          console.log("No artifact names provided to delete.");
+          return;
+        }
+
+        let workflowArtifactNames = allArtifacts.data.artifacts.map(artifact => artifact.name);
+        console.log(`Artifacts produced by workflow run [${workflowArtifactNames.join(', ')}]`);
+
+        let targetArtifactNames = process.env.ARTIFACT_NAMES.split(',').map(name => name.trim());
+        console.log(`Target artifact names/patterns to match workflow artifacts with [${targetArtifactNames.join(', ')}]`);
+
+        let matchingArtifacts = new Set();
+        for(let targetName of targetArtifactNames) {
+          var matches = allArtifacts.data.artifacts.filter((artifact) => {
+            return wildcardMatchRegExp(artifact.name, targetName);
+          });
+          matchingArtifacts.add(...matches);
+        }
+
+        if(!matchingArtifacts || matchingArtifacts.size === 0) {
+          console.log("No artifacts found matching target names.");
+          return;
+        }
+
+        console.log(`Artifacts found matching target names [${Array.from(matchingArtifacts.values().map(artifact => artifact.name)).join(', ')}]`);
+
+        for (let artifact of matchingArtifacts) {
+          let deleted = await github.rest.actions.deleteArtifact({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            artifact_id: artifact.id
+            });
+          if (deleted.status != 204) {
+              throw new Error(`Failed to delete artifact [${artifact.name} (${artifact.id})] - status: [${deleted.status}]`);
+          }
+          console.log(`Deleted artifact [${artifact.name} (${artifact.id}) successfully]`);
+        }
+      
