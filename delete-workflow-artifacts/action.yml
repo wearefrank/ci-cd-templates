@@ -23,11 +23,11 @@ runs:
   steps:
   - name: Delete Artifacts
     uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
+    env:
+      ARTIFACT_NAMES: ${{ inputs.artifact-names }}
+      WORKFLOW_RUN_ID: ${{ inputs.workflow-run-id }}
     with:
       github-token: ${{ inputs.token }}
-      env:
-        ARTIFACT_NAMES: ${{ inputs.artifact-names }}
-        WORKFLOW_RUN_ID: ${{ inputs.workflow-run-id }}
       script: |
         function wildcardMatchRegExp(text, pattern) {
           const regexPattern = new RegExp("^" + pattern.replace(/\?/g, ".").replace(/\*/g, ".*") + "$");
