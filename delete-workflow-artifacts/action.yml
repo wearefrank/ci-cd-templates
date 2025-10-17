@@ -56,14 +56,14 @@ runs:
         let targetArtifactNames = process.env.ARTIFACT_NAMES.split(',').map(name => name.trim());
         console.log(`Target artifact names/patterns to match workflow artifacts with [${targetArtifactNames.join(', ')}]`);
 
-        let matchingArtifacts = new Set();
-        for(let targetName of targetArtifactNames) {
-          var matches = allArtifacts.data.artifacts.filter((artifact) => {
-            console.log(`[${artifact.name}][${targetName}] - [${wildcardMatchRegExp(artifact.name, targetName)}]`);
-            return wildcardMatchRegExp(artifact.name, targetName);
-          });
-          console.log(`${matches.map(artifact => artifact.name).join(', ')}`);
-          matchingArtifacts.add(...matches);
+        let matchingArtifacts = [];
+        for(let artifact of allArtifacts.data.artifacts) {
+          for(let targetName of targetArtifactNames) {
+            if(wildcardMatchRegExp(artifact.name, targetName)) {
+              matchingArtifacts.add(artifact);
+              break;
+            }
+          }
         }
 
         if(!matchingArtifacts || matchingArtifacts.size === 0) {
@@ -71,7 +71,7 @@ runs:
           return;
         }
 
-        console.log(`Artifacts found matching target names [${Array.from(matchingArtifacts.values().map(artifact => artifact.name)).join(', ')}]`);
+        console.log(`Artifacts found matching target names [${matchingArtifacts.map(artifact => artifact.name).join(', ')}]`);
 
         for (let artifact of matchingArtifacts) {
           let deleted = await github.rest.actions.deleteArtifact({
