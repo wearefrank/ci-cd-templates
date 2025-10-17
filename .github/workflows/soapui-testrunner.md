@@ -2,8 +2,7 @@
 Runs tests in a SoapUI and generates a report with the test results.
 
 The application/environment under test can be brought up with a 'Setup' script and cleaned up afterwards with a 'Teardown' script.
-After the 'Setup' script has been executed, the workflow will wait for the container's health endpoint to report 'Healthy'. Once 
-the container is heathy, the SoapUI TestRunner will be executed.
+After the 'Setup' script has been executed, the workflow will wait for the container's health endpoint to report 'Healthy'. Once the container is heathy, the SoapUI TestRunner will be executed.
 
 Warning: Is is very strongly recommended to have the SoapUI project file at the root of the project. SoapUI uses the project 
 file location as project root. Placing it in a subfolder will require all relative paths to resource within the project to 
