@@ -1,5 +1,20 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.1.0](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.9...v2.1.0) (2025-10-17)
+
+### 🍕 Features
+
+* delete workflow artifacts action ([#65](https://github.com/wearefrank/ci-cd-templates/issues/65)) ([f0bcb14](https://github.com/wearefrank/ci-cd-templates/commit/f0bcb14ab4f34a4cdd5933745289968248023938))
+
+### 🤖 Build System
+
+* **dependencies:** bump the github-actions group across 1 directory with 6 updates ([323d7ab](https://github.com/wearefrank/ci-cd-templates/commit/323d7ab8c5282fffb66b945544774b989f5565f8))
+* force release ([4af00cb](https://github.com/wearefrank/ci-cd-templates/commit/4af00cba736ec670f65b1b943767ecc73fc3518e))
+
+### 🔁 Continuous Integration
+
+* bump ci-cd-templates release workflow node version to 24.x ([046c33a](https://github.com/wearefrank/ci-cd-templates/commit/046c33a1873727498293339dde864272c3e8eca6))
+
 ## [2.0.9](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.8...v2.0.9) (2025-09-17)
 
 ### 🤖 Build System
