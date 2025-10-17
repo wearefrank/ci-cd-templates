@@ -59,7 +59,7 @@ runs:
         let matchingArtifacts = new Set();
         for(let targetName of targetArtifactNames) {
           var matches = allArtifacts.data.artifacts.filter((artifact) => {
-            console.log(`[${artifact.name}][${targetName}] - checking match`);
+            console.log(`[${artifact.name}][${targetName}] - []${wildcardMatchRegExp(artifact.name, targetName)}]`);
             return wildcardMatchRegExp(artifact.name, targetName);
           });
           matchingArtifacts.add(...matches);
