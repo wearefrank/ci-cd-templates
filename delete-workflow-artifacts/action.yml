@@ -60,7 +60,7 @@ runs:
         for(let artifact of allArtifacts.data.artifacts) {
           for(let targetName of targetArtifactNames) {
             if(wildcardMatchRegExp(artifact.name, targetName)) {
-              matchingArtifacts.add(artifact);
+              matchingArtifacts.push(artifact);
               break;
             }
           }
