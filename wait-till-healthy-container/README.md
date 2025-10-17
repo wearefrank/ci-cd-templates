@@ -1,9 +1,9 @@
 # Wait Till Docker Healthy Container
-Waits till Docker container's health endpoint returns 'HEALTHY'.
+A more robust and flexible alternative to the **frank-run-till-healthy** action. Starting the container is left to other parts of the workflow with whatever method is prefered. This action simply waits till a Docker container running on the Docker host, returns a 'HEALTHY' health probe result.
+
 Every 5 seconds a `docker inspect` is executed to check for a "HEALTHY" status.
 
-Container Id is the easiest method. If not known, the image-id or image-name can be provided.
-A `docker ps` is done to find the last created container that has the image-id or image-name as ancestor.
+Targetting the container to probe by using 'container-id' is the easiest method. If not known, the 'image-id' or 'image-name' can be provided. A `docker ps` is done to find the last created container that has the 'image-id' or 'image-name' as ancestor.
 
 Note: The container must have a health probe defined.
 
