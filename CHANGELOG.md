@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.1.1](https://github.com/wearefrank/ci-cd-templates/compare/v2.1.0...v2.1.1) (2025-10-17)
+
+### 🤖 Build System
+
+* **dependencies:** bump node-version to v24 ([2fe7b67](https://github.com/wearefrank/ci-cd-templates/commit/2fe7b670c40b3a51f13a6295d8569d8833cd3c7d))
+
 ## [2.1.0](https://github.com/wearefrank/ci-cd-templates/compare/v2.0.9...v2.1.0) (2025-10-17)
 
 ### 🍕 Features
