@@ -122,7 +122,7 @@ jobs:
       env:
         EXISTING_PRS: ${{ toJson(env.existing-prs) }}
       run: |
-        PR_COUNT=$(echo $EXISTING_PRS | jq '. | length')
+        PR_COUNT=$(echo $EXISTING_PRS | jq '.url | length')
         echo "pr-count=$PR_COUNT" >> "$GITHUB_ENV"
         echo "pr-count: [$PR_COUNT]"
 
@@ -139,6 +139,7 @@ jobs:
               gh pr close "$url" -d
             else
               echo "pr-outdated=false" >> "$GITHUB_ENV"
+            fi
           done
 
         echo "PR outdated: [$pr-outdated]"
