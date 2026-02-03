@@ -106,7 +106,6 @@ jobs:
     - name: Look For Existing PR
       env:
         GH_TOKEN: ${{secrets.token}}
-        GH_DEBUG: api
       run: |
         EXISTING_PRS=$(gh pr list -S 'bump f!f version to in:title' --json 'url,title,headRefName')
         echo "existing-prs=$EXISTING_PRS" >> "$GITHUB_ENV"
@@ -118,19 +117,31 @@ jobs:
         echo "REQUESTED_IMAGE_VERSION_TAG=$REQUESTED_IMAGE_VERSION_TAG" >> "$GITHUB_ENV"
         echo "OCI Image Version: [$REQUESTED_IMAGE_VERSION_TAG]"
 
-    - name: Mark PR Outdated
-      if: ${{!contains(fromJson(env.existing-prs)[0].title, env.REQUESTED_IMAGE_VERSION_TAG) && env.existing-prs != '[]'}}
+    - name: Count PR's
+      if: ${{ env.existing-prs && env.existing-prs != '[]' }}
+      env:
+        EXISTING_PRS: ${{ toJson(env.existing-prs) }}
+      run: |
+        PR_COUNT = $(echo $EXISTING_PRS | jq '. | length')
+        echo "pr-count=$PR_COUNT" >> "$GITHUB_ENV"
+        echo "pr-count: [$PR_COUNT]"
+
+    - name: Count PR's
+      if: ${{ env.pr-count >= 0 }}
+      env:
+        EXISTING_PRS: ${{ toJson(env.existing-prs) }}
+        REQUESTED_IMAGE_VERSION_TAG: ${{ env.REQUESTED_IMAGE_VERSION_TAG }}
       run: |
         echo "pr-outdated=true" >> "$GITHUB_ENV"
-        echo "PR outdated: [$pr-outdated]"
+        echo "EXISTING_PRS" | jq -r '.[] | [.url .title] | @tsv' |
+          while IFS=$'\t' read -r url title; do
+            if [[ ! "$title" =~ $REQUESTED_IMAGE_VERSION_TAG ]]; then
+              gh pr close "$url" -d
+            else
+              echo "pr-outdated=false" >> "$GITHUB_ENV"
+          done
 
-    - name: Delete Outdated PR
-      if: env.pr-outdated
-      env: 
-        GH_TOKEN: ${{ secrets.token }}
-        PR_URL: ${{fromJson(env.existing-prs)[0].url}}
-      run: |
-        gh pr close "$PR_URL" -d
+        echo "PR outdated: [$pr-outdated]"
 
     - name: Get Current F!F Image Tag From Dockerfile
       if: (env.pr-outdated || env.existing-prs == '[]')
