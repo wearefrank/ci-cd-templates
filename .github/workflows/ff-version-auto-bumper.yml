@@ -108,7 +108,7 @@ jobs:
         GH_TOKEN: ${{secrets.token}}
         GH_DEBUG: api
       run: |
-        EXISTING_PRS=$(gh pr list -S 'type:pr is:open build(dependencies): bump f!f version to in:title' --json 'url,title,headRefName')
+        EXISTING_PRS=$(gh pr list -S 'build(dependencies): bump f!f version to in:title' --json 'url,title,headRefName')
         echo "existing-prs=$EXISTING_PRS" >> "$GITHUB_ENV"
         echo "Existing PR's: [$EXISTING_PRS]"
 
