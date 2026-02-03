@@ -124,7 +124,7 @@ jobs:
         REQUESTED_IMAGE_VERSION_TAG: ${{ env.REQUESTED_IMAGE_VERSION_TAG }}
       run: |
         echo "pr-outdated=true" >> "$GITHUB_ENV"
-        echo "$existing-prs" | jq -r '.[] | [.url .title] | @tsv' |
+        echo "$EXISTING_PRS" | jq -r '.[] | [.url .title] | @tsv' |
           while IFS=$'\t' read -r url title; do
             if [[ ! "$title" =~ $REQUESTED_IMAGE_VERSION_TAG ]]; then
               gh pr close "$url" -d
