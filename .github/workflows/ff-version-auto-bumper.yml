@@ -117,17 +117,8 @@ jobs:
         echo "REQUESTED_IMAGE_VERSION_TAG=$REQUESTED_IMAGE_VERSION_TAG" >> "$GITHUB_ENV"
         echo "OCI Image Version: [$REQUESTED_IMAGE_VERSION_TAG]"
 
-    - name: Count PR's
+    - name: Delete Outdated PR's
       if: ${{ env.existing-prs && env.existing-prs != '[]' }}
-      env:
-        EXISTING_PRS: ${{ toJson(env.existing-prs) }}
-      run: |
-        PR_COUNT=$(echo $EXISTING_PRS | jq '.[] | .url | length')
-        echo "pr-count=$PR_COUNT" >> "$GITHUB_ENV"
-        echo "pr-count: [$PR_COUNT]"
-
-    - name: Count PR's
-      if: ${{ env.pr-count >= 0 }}
       env:
         EXISTING_PRS: ${{ toJson(env.existing-prs) }}
         REQUESTED_IMAGE_VERSION_TAG: ${{ env.REQUESTED_IMAGE_VERSION_TAG }}
@@ -141,7 +132,6 @@ jobs:
               echo "pr-outdated=false" >> "$GITHUB_ENV"
             fi
           done
-
         echo "PR outdated: [$pr-outdated]"
 
     - name: Get Current F!F Image Tag From Dockerfile
