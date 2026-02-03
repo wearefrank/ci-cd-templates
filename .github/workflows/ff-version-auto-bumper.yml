@@ -106,6 +106,7 @@ jobs:
     - name: Look For Existing PR
       env:
         GH_TOKEN: ${{secrets.token}}
+        GH_DEBUG: api
       run: |
         EXISTING_PRS=$(gh pr list --json 'url,title,headRefName')
         echo "existing-prs=$EXISTING_PRS" >> "$GITHUB_ENV"
