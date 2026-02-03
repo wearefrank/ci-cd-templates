@@ -78,7 +78,9 @@ on:
 jobs:
   check-ff-version-and-update:
     runs-on: ubuntu-latest
-
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.dockerhub-username }}
+      DOCKERHUB_TOKEN: ${{ secrets.dockerhub-token }}
     steps:
     - name: Checkout
       uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # 5.0.0
@@ -88,7 +90,7 @@ jobs:
 
     - name: Login to Container Registry
       uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # 3.6.0
-      if: ( secrets.dockerhub-username && secrets.dockerhub-token )
+      if: env.DOCKERHUB_USERNAME && env.DOCKERHUB_TOKEN
       with:
         username: ${{ secrets.dockerhub-username }}
         password: ${{ secrets.dockerhub-token }}
@@ -215,7 +217,7 @@ jobs:
       continue-on-error: true
 
     - name: Docker Scout
-      if: (env.pr-outdated || env.existing-prs == '[]') && env.VERSION_CHANGED && secrets.dockerhub-username && secrets.dockerhub-token
+      if: (env.pr-outdated || env.existing-prs == '[]') && env.VERSION_CHANGED && env.DOCKERHUB_USERNAME && env.DOCKERHUB_TOKEN
       id: docker-scout
       uses: docker/scout-action@v1
       with:
