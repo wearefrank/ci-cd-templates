@@ -116,19 +116,28 @@ jobs:
         echo "REQUESTED_IMAGE_VERSION_TAG=$REQUESTED_IMAGE_VERSION_TAG" >> "$GITHUB_ENV"
         echo "OCI Image Version: [$REQUESTED_IMAGE_VERSION_TAG]"
 
-    - name: Mark PR Outdated
-      if: ${{!contains(fromJson(env.existing-prs)[0].title, env.REQUESTED_IMAGE_VERSION_TAG) && env.existing-prs != '[]'}}
-      run: |
-        echo "pr-outdated=true" >> "$GITHUB_ENV"
-        echo "PR outdated: [$pr-outdated]"
-
-    - name: Delete Outdated PR
-      if: env.pr-outdated
-      env: 
+    - name: Delete Outdated PR's
+      if: ${{ env.existing-prs }}
+      env:
+        REQUESTED_IMAGE_VERSION_TAG: ${{ env.REQUESTED_IMAGE_VERSION_TAG }}
         GH_TOKEN: ${{ secrets.token }}
-        PR_URL: ${{fromJson(env.existing-prs)[0].url}}
       run: |
-        gh pr close "$PR_URL" -d
+        PR_OUTDATED=true
+        
+        EXISTING_PRS=${{ toJson(env.existing-prs) }}
+          while IFS=$'\t' read -r url title; do
+            echo "Checking if PR with title [$title] targets newest version tag [$REQUESTED_IMAGE_VERSION_TAG]"
+            if [[ ! "$title" =~ $REQUESTED_IMAGE_VERSION_TAG ]]; then
+              echo "PR does not match target version tag; Deleting PR"
+              gh pr close "$url" -d
+            else
+              echo "PR matches target version tag; Flagging PR's to not be outdated"
+              PR_OUTDATED=
+            fi
+          done < <(echo -e "$EXISTING_PRS" | jq -r '.[] | [.url, .title] | @tsv')
+
+        echo "pr-outdated=$PR_OUTDATED" >> "$GITHUB_ENV"
+        echo "PR outdated: [$PR_OUTDATED]"
 
     - name: Get Current F!F Image Tag From Dockerfile
       if: (env.pr-outdated || env.existing-prs == '[]')
