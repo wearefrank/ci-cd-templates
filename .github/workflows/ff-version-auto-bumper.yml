@@ -78,7 +78,9 @@ on:
 jobs:
   check-ff-version-and-update:
     runs-on: ubuntu-latest
-
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.dockerhub-username }}
+      DOCKERHUB_TOKEN: ${{ secrets.dockerhub-token }}
     steps:
     - name: Checkout
       uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # 6.0.1
@@ -86,6 +88,7 @@ jobs:
         fetch-depth: 0
 
     - name: Login to Container Registry
+      if: env.DOCKERHUB_USERNAME && env.DOCKERHUB_TOKEN
       uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # 3.6.0
       with:
         username: ${{ secrets.dockerhub-username }}
@@ -103,7 +106,7 @@ jobs:
       env:
         GH_TOKEN: ${{secrets.token}}
       run: |
-        EXISTING_PRS=$(gh pr list -S 'type:pr is:open build(dependencies): bump f!f version to in:title' --json 'url,title,headRefName')
+        EXISTING_PRS=$(gh pr list -S 'type:pr is:open bump f!f version to in:title' --json 'url,title,headRefName')
         echo "existing-prs=$EXISTING_PRS" >> "$GITHUB_ENV"
         echo "Existing PR's: [$EXISTING_PRS]"
 
@@ -213,7 +216,7 @@ jobs:
       continue-on-error: true
 
     - name: Docker Scout
-      if: (env.pr-outdated || env.existing-prs == '[]') && env.VERSION_CHANGED
+      if: (env.pr-outdated || env.existing-prs == '[]') && env.VERSION_CHANGED && env.DOCKERHUB_USERNAME && env.DOCKERHUB_TOKEN
       id: docker-scout
       uses: docker/scout-action@v1
       with:
