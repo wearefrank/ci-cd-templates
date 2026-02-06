@@ -146,7 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
         with:
           token: ${{secrets.token}}
 
@@ -175,13 +175,13 @@ jobs:
       
       - name: Wait Till Healthy Container
         id: wait-till-healthy
-        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@50a6bc0338691d1bb0112fb532d99ccee6e4ce30 #2.1.3
+        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@fb0ea6fd779416fe1f67ce942deb12bac7f537a4 #2.1.4
         with:
           image-id: ${{inputs.image-id}}
           image-name: ${{inputs.image-name}}
 
       - name: SoapUI TestRunner
-        uses: wearefrank/ci-cd-templates/soapui-testrunner@50a6bc0338691d1bb0112fb532d99ccee6e4ce30 #2.1.3
+        uses: wearefrank/ci-cd-templates/soapui-testrunner@fb0ea6fd779416fe1f67ce942deb12bac7f537a4 #2.1.4
         timeout-minutes: 15
         with:
           project-dir: ${{inputs.project-dir}}
