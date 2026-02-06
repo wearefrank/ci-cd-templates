@@ -1,5 +1,12 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.1.4](https://github.com/wearefrank/ci-cd-templates/compare/v2.1.3...v2.1.4) (2026-02-06)
+
+### 🐛 Bug Fixes
+
+* only execute docker scout if dockerhub credentials are provided ([15fcb96](https://github.com/wearefrank/ci-cd-templates/commit/15fcb9629e8fb9f75cd51dc4d22b3ae600aa73aa))
+* remove 'build(dependencies):' from pr list search query due to GitHub bug ([ac7dec5](https://github.com/wearefrank/ci-cd-templates/commit/ac7dec5ba53a6a5fc8402fbcbb18c2c49240d3d7))
+
 ## [2.1.3](https://github.com/wearefrank/ci-cd-templates/compare/v2.1.2...v2.1.3) (2025-12-22)
 
 ### 🤖 Build System
