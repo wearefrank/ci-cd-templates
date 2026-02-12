@@ -3,13 +3,60 @@ name: "Docker Continuous Integration - Generic"
 on:
   workflow_call:
     inputs:
-      docker-image-repo:
-        description: Docker image repository. Default -> GitHub repository owner/organisation.
+      image-artifact-backend:
+        type: string
+        default: 'gh-artifacts'
+        description: >
+          The method used for obtaining and loading the Docker Image built in another CI job that contains the application under test. 
+          
+          The 'gh-artifacts' method downloads and loads an exported Docker Image Tarball, that was uploaded to GitHub Actions Storage in a previous CI job. 
+          The 'registry' method pulls the image from an (snapshot) image registry, that was pushed to the registry in a previous CI job.
+
+          Options:
+          - 'gh-artifacts': Load the Docker Image from a Tarball, downloaded via Github Artifact Storage. When this option is used, both `image-build-artifact-name` and `image-tarball-file` need to be provided.
+            Additionally, either `image-id` or `image-name` needs to be provided, or both.
+          - 'registry': Pull the Docker Image from a (snapshot) registry. When this option is used, both `image-name` AND `image-id` needs to be provided.
+
+          default: 'gh-artifacts'
+        required: true
+      image-artifact-name:
+        type: string
+        description: >
+          Name of the artifact to upload to GitHub Actions Storage, that contains the exported Docker Image Tarball.
+
+          Only required when `image-artifact-backend: 'gh-artifacts'`.
+
+          Default: 'build-docker-image'
+        required: false
+        default: 'build-docker-image'
+      image-artifact-file:
+        type: string
+        description: >
+          Path and filename of the exported Docker Image Tarball, that is to be uploaded to GitHub Actions Storage.
+
+          Only required when `image-artifact-backend: 'gh-artifacts'`.
+
+          Default: 'image.tar'
+        required: false
+        default: 'image.tar'
+      image-registry:
+        description: Image registry prefix (e.g. ghcr.io, docker.io)
+        type: string
+        required: false
+        default: 'ghcr.io'
+      image-repo:
+        description: >
+          Image repository(e.g. wearefrank, my-github-username). Default -> GitHub repository owner/organisation.
+
+          default -> GitHub repository owner/organisation.
         type: string
         required: false
         default: ${{ github.repository_owner }}
-      docker-image-name:
-        description: Docker image name. Default -> GitHub repository name.
+      image-name:
+        description: >
+          Image name(e.g. zaakbrug, frankframework).
+          
+          default -> GitHub repository name.
         type: string
         required: false
         default: ${{ github.event.repository.name }}
@@ -39,7 +86,25 @@ on:
         description: Run Frank till the health endpoints returns 'HEALTHY'
         default: true
     secrets:
-      token:
+      token: 
+        description: >
+          GitHub token with permissions to access the repository.
+
+          default: GitHub token (secrets.GITHUB_TOKEN)
+        required: false
+      registry-username:
+        description: >
+          Username for the registry.
+
+          Only required when `image-artifact-backend: 'registry'`.
+
+          default: GitHub actor username (github.actor).
+        required: false
+      registry-token:
+        description: >
+          Token for the registry
+
+          Only required when `image-artifact-backend: 'registry'`.
         required: false
     outputs:
       image-id: 
@@ -57,9 +122,9 @@ jobs:
     outputs:
       docker-meta-tags: ${{ steps.meta.outputs.tags }}
       docker-meta-labels: ${{ steps.meta.outputs.labels }}
-      image-id: ${{ steps.build.outputs.imageid }}
-      image-digest: ${{ steps.build.outputs.digest }}
-      image-metadata: ${{ steps.build.outputs.metadata }}
+      image-id: ${{ steps.build-tarball.outputs.imageid || steps.build-registry.outputs.imageid }}
+      image-digest: ${{ steps.build-tarball.outputs.digest || steps.build-registry.outputs.digest }}
+      image-metadata: ${{ steps.build-tarball.outputs.metadata || steps.build-registry.outputs.metadata }}
     steps:
     - uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
       with:
@@ -74,14 +139,16 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #6.0.1
+      with:
+        token: ${{ secrets.token }}
 
-    - name: "Download Pre-build Artifacts"
+    - name: Download Pre-build Artifacts
       uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #7.0.0
       with:
         pattern: pre-build-*
         merge-multiple: true
 
-    - name: "Download Build Artifacts"
+    - name: Download Build Artifacts
       uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #7.0.0
       with:
         pattern: build-*
@@ -91,7 +158,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 #5.10.0
       with:
-        images: ${{ inputs.docker-image-repo }}/${{ inputs.docker-image-name }}
+        images: ${{ inputs.image-registry }}/${{ inputs.image-repo }}/${{ inputs.image-name }}
         tags: |
           type=semver,pattern={{version}},value=${{ inputs.version }}
           type=semver,pattern={{major}}.{{minor}},value=${{ inputs.version }}
@@ -107,24 +174,51 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 #3.11.1
 
-    - name: Build and export Docker image
-      id: build
+    - name: Login to Container Registry
+      if: inputs.image-artifact-backend == 'registry'
+      uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # 3.6.0
+      with:
+        registry: ${{ inputs.image-registry }}
+        username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
+        password: ${{ secrets.registry-token == '' && inputs.image-registry == 'ghcr.io' && secrets.token || secrets.registry-token }}
+
+    - name: Build And Export To Tarball
+      if: inputs.image-artifact-backend == 'gh-artifacts'
+      id: build-tarball
       uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 #6.18.0
       with:
         context: .
         platforms: linux/amd64
-        outputs: type=docker,dest=image.tar
+        outputs: type=docker,dest=${{ inputs.image-artifact-file }}
         push: false
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
-    - name: "Upload Docker tar"
+    # compression=zstd,compression-level=15
+    - name: Build And Push To Registry
+      if: inputs.image-artifact-backend == 'registry'
+      id: build-registry
+      uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 #6.18.0
+      with:
+        context: .
+        platforms: linux/amd64, linux/arm64
+        outputs: oci-mediatypes=true
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        provenance: true
+        sbom: true
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Upload Image Tarball as Artifact
+      if: inputs.image-artifact-backend == 'gh-artifacts'
       uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #6.0.0
       with:
-        name: build-docker-image
-        path: ./image.tar
+        name: ${{ inputs.image-artifact-name }}
+        path: ${{ inputs.image-artifact-file }}
         retention-days: 1
 
   checkov-linter:
@@ -143,6 +237,8 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #6.0.1
+      with:
+        token: ${{ secrets.token }}
 
     - name: Lint Dockerfile with Checkov
       id: checkov
@@ -160,12 +256,12 @@ jobs:
     - name: Upload Sarif report as artifact
       uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #6.0.0
       with:
-        name: checkov-results
+        name: report-checkov-results
         path: reports/checkov-results.sarif
 
     - name: Upload to GitHub Security
       uses: github/codeql-action/upload-sarif@5d4e8d1aca955e8d8589aabd499c5cae939e33c7 #4.31.9
-      if: ${{ inputs.upload-sarif-to-security }}
+      if: inputs.upload-sarif-to-security
       with:
         sarif_file: 'reports/checkov-results.sarif'
     
@@ -214,9 +310,9 @@ jobs:
 
   run-till-healthy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     if: inputs.run-frank-till-healthy-enabled
+    permissions:
+      contents: read 
     needs: build
     steps:
     - uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
@@ -225,24 +321,68 @@ jobs:
         egress-policy: audit
         allowed-endpoints: >
           github.com:443
-
-    - name: Download Docker tar
-      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #7.0.0
-      with:
-        name: build-docker-image
-
-    - name: Load Docker tar
-      shell: bash
-      run: |
-        docker load --input image.tar
-
+    
     - name: Checkout
       uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #6.0.1
       with:
         token: ${{ secrets.token }}
 
-    - name: Run till healthy
-      uses: wearefrank/ci-cd-templates/frank-run-till-healthy@main
+    - name: Download Image Tarball Artifact
+      if: inputs.image-artifact-backend == 'gh-artifacts'
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #7.0.0
+      with:
+        name: ${{ inputs.image-artifact-name }}
+
+    - name: Load Docker Tarball
+      if: inputs.image-artifact-backend == 'gh-artifacts'
+      shell: bash
+      run: |
+        docker load --input ${{ inputs.image-artifact-file }}
+
+    - name: Login to Container Registry
+      if: inputs.image-artifact-backend == 'registry'
+      uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # 3.6.0
+      with:
+        registry: ${{ inputs.image-registry }}
+        username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
+        password: ${{ secrets.registry-token == '' && inputs.image-registry == 'ghcr.io' && secrets.token || secrets.registry-token }}
+
+    - name: Build Image Ref
+      id: build-image-ref
+      shell: bash
+      env:
+        IMAGE_REGISTRY: ${{ inputs.image-registry }}
+        IMAGE_REPO: ${{ inputs.image-repo }}
+        IMAGE_NAME: ${{ inputs.image-name }}
+        IMAGE_ID: ${{ needs.build.outputs.image-id }}
+        IMAGE_DIGEST: ${{ needs.build.outputs.image-digest }}
+      run: |
+        if [[ ! -z "${IMAGE_ID}" ]]; then
+          IMAGE_REF="${IMAGE_REGISTRY@L}/${IMAGE_REPO@L}/${IMAGE_NAME@L}@${IMAGE_ID}"
+          echo "image-ref=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "Image Ref (<registry>/<repository>/<name>@<image-id>): [$IMAGE_REF]"
+        elif [[ ! -z "${IMAGE_DIGEST}" ]]; then
+          IMAGE_REF="${IMAGE_REGISTRY@L}/${IMAGE_REPO@L}/${IMAGE_NAME@L}@${IMAGE_DIGEST}"
+          echo "image-ref=$IMAGE_REF" >> "$GITHUB_ENV"
+          echo "Image Ref (<registry>/<repository>/<name>@<image-digest>): [$IMAGE_REF]"
+        else
+          echo "Neither 'image-id', nor 'image-digest' was found for the built image."
+          exit 1
+        fi
+
+    - name: Pull Image From Registry
+      if: inputs.image-artifact-backend == 'registry'
+      shell: bash
+      env:
+        IMAGE_REF: ${{ env.image-ref }}
+      run: |
+        REF="${IMAGE_REF}"
+        echo "Pulling image from registry with ref: [${image-ref}]"
+        docker pull $(echo "${image-ref}")
+
+    - name: Run Till Healthy
+      uses: wearefrank/ci-cd-templates/frank-run-till-healthy@generic-docker-ci-registry-backend
       with:
         image-id: ${{ needs.build.outputs.image-id }}
+        docker-image-tag: ${{ env.image-ref }}
 
