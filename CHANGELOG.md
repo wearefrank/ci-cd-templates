@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.1.5](https://github.com/wearefrank/ci-cd-templates/compare/v2.1.4...v2.1.5) (2026-02-12)
+
+### 🧑‍💻 Code Refactoring
+
+* ff-version-bumper cleanup multiple outdated PR's ([4fd1339](https://github.com/wearefrank/ci-cd-templates/commit/4fd1339cc05461de2a5b7de3f065583553b230e8))
+
 ## [2.1.4](https://github.com/wearefrank/ci-cd-templates/compare/v2.1.3...v2.1.4) (2026-02-06)
 
 ### 🐛 Bug Fixes
