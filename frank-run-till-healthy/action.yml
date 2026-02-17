@@ -1,63 +1,106 @@
-name: "Run Docker till healthy"
-description: "Runs the Docker container till the health endpoint returns 'HEALTHY', indicating that the database and adapters are all correctly started"
+name: "Run Docker Till Healthy"
+description: "Runs the container till the health endpoint returns 'HEALTHY', indicating that the database and adapters are all correctly started"
 inputs:
   image-id:
     description: >
-      Docker image id of the loaded image to use.
+      Image id of the application under test.
 
-      Note that the Docker image needs to be available to the Docker runtime already.
+      Note: An image id is the hash of the local image json configuration and may differ across environments and runs.
+      Note: The Image needs to be available to the local Docker runtime already.
     required: false
   docker-image-tag:
     description: >
-      Docker image tag of the loaded image to use. For example: 'wearefrank/zaakbrug:1.2.0'.
+      [DEPRECATED] This input is deprecated and will be removed in favor of 'image-ref' in the future.
 
-      Note that the Docker image needs to be available to the Docker runtime already.
+      Image reference of the application under test according to the [OCI Image Reference Format](https://docs.docker.com/reference/compose-file/services/#image) as `[<registry>/][<project>/]<image>[:<tag>|@<digest>]`.
+      For example: 'docker.io/wearefrank/zaakbrug:1.2.0'.
+
+      Note: The Image needs to be available to the local Docker runtime already.
+      Warning: Using `image-ref` without a digest could resolve to an already released image if the CI built image is not available in the local Docker engine.
     required: false
+  image-ref:
+    description: >
+      Image reference of the application under test according to the [OCI Image Reference Format](https://docs.docker.com/reference/compose-file/services/#image) as `[<registry>/][<project>/]<image>[:<tag>|@<digest>]`.
+      For example: 'docker.io/wearefrank/zaakbrug:1.2.0'.
 
+      Note: The Image needs to be available to the local Docker runtime already.
+      Warning: Using `image-ref` without a digest could resolve to an already released image if the CI built image is not available in the local Docker engine.
+    required: false
+  setup-script:
+    description: >
+      A 'Setup' script to bring up the application/environment under test. The script must be non-blocking.
+
+      Examples:
+      Docker Compose(with `service.image: ${IMAGE_ID:-${IMAGE_REF:-<registry>/<organisation>/<image-name>}}`):
+      ```bash
+        docker compose -f 'compose.frank.yaml' -f 'compose.frank.ci.yaml' up -d
+      ```
+      Docker:
+      ```bash
+        docker run -d ${IMAGE_ID:-${IMAGE_REF:-<registry>/<organisation>/<image-name>}}
+      ```
+
+      Warning: It is very important that the image built in CI is used. The 'Setup' script should never build the Docker Image.
+      The environment variables `IMAGE_ID` and/or `IMAGE_REF` are available in the 'Setup' script depending on which one is provided to
+      this workflow.
+      Warning: Using `image-ref` without a digest could resolve to an already released image if the CI built image is not available in the local Docker engine.
+    required: false
+    default: |
+      set -x
+
+      docker run -p 8080:8080 -e dtap.stage=LOC -d ${IMAGE_ID:-${IMAGE_REF}}
+  teardown-script:
+    description: >
+      A 'Teardown' script to stop and cleanup up the application/environment under test. The script must be non-blocking.
+
+      The environment variables `IMAGE_ID` and `IMAGE_REF` are available to the script depending on which one is provided to
+      this workflow, aswell as `CONTAINER_ID` for stopping/cleaning up the used container afterwards.
+
+      Examples:
+      Docker Compose:
+      ```bash
+        docker compose -f 'compose.frank.yaml' -f 'compose.frank.ci.yaml' down -v
+      ```
+      Docker:
+      ```bash
+        docker stop ${CONTAINER_ID}
+        docker rm --volumes ${CONTAINER_ID}
+      ```
+    required: false
+    default: |
+      docker stop ${CONTAINER_ID}
+      docker rm --volumes ${CONTAINER_ID}
 runs:
   using: "composite"
   steps:
-  - name: List loaded Docker images
+  - name: List Local Images
     shell: bash
     if: runner.debug == '1'
     run: |
-      docker image ls -a
+      docker images -a --digests
 
-  - name: Test Docker image
+  - name: Setup Test Environment
     shell: bash
-    run: |
-      set -x
+    env:
+      IMAGE_ID: ${{ inputs.image-id }}
+      IMAGE_TAG: ${{ inputs.image-ref || inputs.docker-image-tag }}
+      IMAGE_REF: ${{ inputs.image-ref || inputs.docker-image-tag }}
+    run: "${{inputs.setup-script}}"
 
-      docker run -p 8080:8080 -e dtap.stage=LOC --name=test -d ${{ inputs.image-id || inputs.docker-image-tag }}
+  - name: Wait Till Healthy Container
+    id: wait-till-healthy
+    uses: wearefrank/ci-cd-templates/wait-till-healthy-container@50a6bc0338691d1bb0112fb532d99ccee6e4ce30 #2.1.3
+    with:
+      image-id: ${{ inputs.image-id }}
+      image-name: ${{ inputs.image-ref || inputs.docker-image-tag }}
 
-      sleep 30
-
-      RETRY_COUNT=0
-      HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' test)
-      until [ "$HEALTH" = '"healthy"' ]
-      do
-        if [ $RETRY_COUNT -gt 15 ]
-          then
-              exit 1
-        fi
-
-        let RETRY_COUNT+=1
-        HEALTH=$(docker inspect --format='{{json .State.Health.Status}}' test)
-        sleep 15
-      done
-
-  - name: Docker inspect, stats and logs
+  - name: Teardown Test Environment
+    if: always()
     shell: bash
-    if: failure()
-    run: |
-      docker inspect test
-      docker logs test
-      docker stats --no-stream test
-
-  - name: Cleanup
-    shell: bash
-    if: ${{ always() }}
-    run: |
-      docker stop test
-      docker rm --volumes test
-      
+    env:
+      IMAGE_ID: ${{ inputs.image-id }}
+      IMAGE_TAG: ${{ inputs.image-ref || inputs.docker-image-tag }}
+      IMAGE_REF: ${{ inputs.image-ref || inputs.docker-image-tag }}
+      CONTAINER_ID: ${{steps.wait-till-healthy.outputs.container-id}}
+    run: "${{inputs.teardown-script}}"
+  
