@@ -3,16 +3,85 @@ name: "Continuous Integration - Generic"
 on:
   workflow_call:
     inputs:
+      image-artifact-backend:
+        type: string
+        default: 'registry'
+        description: >
+          The method used for sharing the image artifact between jobs.
+          
+          The 'gh-artifacts' method downloads and loads an exported Docker Image Tarball, that was uploaded to GitHub Actions Storage in a previous CI job. 
+          The 'registry' method pulls the image from an (staging) image registry, that was pushed to the registry in a previous CI job.
+
+          Options:
+          - 'gh-artifacts': Share the image artifact as Tarball, uploaded/downloaded via Github Artifact Storage. When this option is used, both `image-build-artifact-name` and `image-tarball-file` are used.
+          - 'registry': Share the image artifact via a (staging) registry. When this option is used, both `registry-username`, `registry-token` need to be provided or alternatively `token` can be used when the registry is `ghcr.io` and the token has appropriate permissions.
+
+          default: 'registry'
+        required: false
+      image-artifact-name:
+        type: string
+        description: >
+          Name of the artifact to upload to GitHub Actions Storage, that contains the exported Docker Image Tarball.
+
+          Only required when `image-artifact-backend: 'gh-artifacts'`.
+
+          Default: 'build-docker-image'
+        required: false
+        default: 'build-docker-image'
+      image-artifact-file:
+        type: string
+        description: >
+          Path and filename of the exported Docker Image Tarball, that is to be uploaded to GitHub Actions Storage.
+
+          Only required when `image-artifact-backend: 'gh-artifacts'`.
+
+          Default: 'image.tar'
+        required: false
+        default: 'image.tar'
       docker-image-repo:
-        description: Docker image repository. Default -> GitHub repository owner/organisation.
+        description: >
+          DEPRECATED in favor of `image-repo`.
+
+          Docker image repository. 
+          
+          Default -> GitHub repository owner/organisation.
         type: string
         required: false 
         default: ${{ github.repository_owner }}
       docker-image-name:
-        description: Docker image name. Default -> GitHub repository name.
+        description: >
+          DEPRECATED in favor of `image-name`.
+
+          Docker image name.
+          
+          Default -> GitHub repository name.
         type: string
         required: false
         default: ${{ github.event.repository.name }}
+      image-registry:
+        description: >
+          Image registry prefix (e.g. ghcr.io, docker.io).
+
+          Default: 'ghcr.io'
+        type: string
+        required: false
+        default: 'ghcr.io'
+      image-repo:
+        description: >
+          Image repository(e.g. wearefrank, my-github-username).
+          
+          Default -> GitHub repository owner/organisation.
+        type: string
+        required: false
+        default: ${{ inputs.docker-image-repo || github.repository_owner }}
+      image-name:
+        description: >
+          Image name(e.g. zaakbrug, frankframework).
+          
+          default -> GitHub repository name.
+        type: string
+        required: false
+        default: ${{ inputs.docker-image-name || github.event.repository.name }}
       version:
         type: string
         required: false
@@ -34,8 +103,25 @@ on:
         description: Run Frank till the health endpoints returns 'HEALTHY'
         default: true
     secrets:
-      token:
+      token: 
+        description: >
+          GitHub token with permissions to access the repository.
+
+          default: GitHub token (secrets.GITHUB_TOKEN)
         required: false
+      registry-username:
+        description: >
+          Username for the registry.
+
+          Only required when `image-artifact-backend: 'registry'`.
+
+          default: GitHub actor username (github.actor).
+        required: false
+      registry-token:
+        description: >
+          Token for the registry
+
+          Only required when `image-artifact-backend: 'registry'`.
     outputs:
       image-id: 
         value: ${{ jobs.docker-ci.outputs.image-id }}
@@ -43,13 +129,17 @@ on:
         value: ${{ jobs.docker-ci.outputs.image-digest }}
       image-metadata: 
         value: ${{ jobs.docker-ci.outputs.image-metadata }}
+      docker-meta-tags: 
+        value: ${{ jobs.docker-ci.outputs.docker-meta-tags }}
+      docker-meta-labels: 
+        value: ${{ jobs.docker-ci.outputs.docker-meta-labels }}
 
 
 jobs:
   update-buildinfo:
     runs-on: ubuntu-latest
     permissions:
-      contents: read    
+      contents: read
     steps:
     - uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
       with:
@@ -75,16 +165,19 @@ jobs:
         retention-days: 1
 
   docker-ci:
-    uses: wearefrank/ci-cd-templates/.github/workflows/docker-ci-generic.yml@main
+    uses: wearefrank/ci-cd-templates/.github/workflows/docker-ci-generic.yml@generic-docker-ci-registry-backend
     needs: update-buildinfo
     secrets:
       token: ${{ secrets.token }}
+      registry-username: ${{ secrets.registry-username || github.actor }}
+      registry-token: ${{ secrets.registry-token || secrets.token }}
     with:
+      image-artifact-backend: ${{ inputs.image-artifact-backend }}
+      image-registry: ${{ inputs.image-registry }}
+      image-repo: ${{ inputs.image-repo }}
+      image-name: ${{ inputs.image-name }}${{ inputs.image-artifact-backend == 'registry' && '-staging' || '' }}
       version: ${{ inputs.version }}
-      docker-image-repo: ${{ inputs.docker-image-repo }}
-      docker-image-name: ${{ inputs.docker-image-name }}
       upload-sarif-to-security: false
       chekov-linter-enabled: ${{ inputs.chekov-linter-enabled }}
       run-frank-till-healthy-enabled: ${{ inputs.run-frank-till-healthy-enabled }}
-
   
