@@ -3,21 +3,94 @@ name: "Docker Release - Generic"
 on:
   workflow_call:
     inputs:
+      image-artifact-backend:
+        type: string
+        default: 'registry'
+        description: >
+          The method used for sharing the image artifact between jobs.
+          
+          The 'gh-artifacts' method downloads and loads an exported Docker Image Tarball, that was uploaded to GitHub Actions Storage in a previous CI job.
+          The 'registry' method **copies** the image from a source image registry to the target registry if a source registry is configured. Otherwise builds from cache.
+
+          Options:
+          - 'gh-artifacts': Share the image artifact as Tarball, uploaded/downloaded via Github Artifact Storage.
+          - 'registry': Share the image artifact via a source registry. When this option is used, all 'source-*' inputs params need to be provided. Also both 'source-registry-username', 'source-registry-token' need to be provided or alternatively 'token' can be used when the registry is `ghcr.io` and the token has appropriate permissions.
+
+          default: 'registry'
+        required: false
+
       registry-prefix:
-        description: Image registry prefix (e.g. ghcr.io, docker.io)
+        description: >
+          DEPRECATED in favor of 'image-registry'.
+
+          Image registry prefix (e.g. ghcr.io, docker.io)
         type: string
         required: false
         default: 'ghcr.io'
       docker-image-repo:
-        description: Docker image repository. Default -> GitHub repository owner/organisation.
+        description: >
+          DEPRECATED in favor of 'image-repo'.
+
+          Docker image repository. Default -> GitHub repository owner/organisation.
         type: string
         required: false
         default: ${{ github.repository_owner }}
       docker-image-name:
-        description: Docker image name. Default -> GitHub repository name.
+        description: >
+          DEPRECATED in favor of 'image-name'.
+          
+          Docker image name. Default -> GitHub repository name.
         type: string
         required: false
         default: ${{ github.event.repository.name }}
+      image-registry:
+        description: >
+          Target image registry prefix (e.g. ghcr.io, docker.io)
+
+          Default: 'ghcr.io'
+        type: string
+        required: false
+        default: ${{ inputs.registry-prefix || 'ghcr.io' }}
+      image-repo:
+        description: >
+          Target image repository(e.g. wearefrank, my-github-username).
+
+          Default -> GitHub repository owner/organisation ('github.repository_owner').
+        type: string
+        required: false
+        default: ${{ inputs.docker-image-repo || github.repository_owner }}
+      image-name:
+        description: >
+          Target image name(e.g. zaakbrug, frankframework).
+          
+          default -> GitHub repository name ('github.event.repository.name').
+        type: string
+        required: false
+        default: ${{ inputs.docker-image-name || github.event.repository.name }}
+      source-image-registry:
+        description: >
+          Source image registry prefix (e.g. ghcr.io, docker.io)
+
+          Default: 'ghcr.io'
+        type: string
+        required: false
+        default: 'ghcr.io'
+      source-image-repo:
+        description: >
+          Source image repository(e.g. wearefrank, my-github-username).
+          
+          Default -> GitHub repository owner/organisation ('github.repository_owner').
+        type: string
+        required: false
+        default: ${{ github.repository_owner }}
+      source-image-name:
+        description: >
+          Source image name(e.g. zaakbrug, frankframework).
+          
+          default -> GitHub repository name ('github.event.repository.name') + '-staging'.
+        type: string
+        required: false
+        default: ${{ github.event.repository.name }}-staging
       version:
         type: string
         required: false
@@ -29,11 +102,39 @@ on:
         description: Add latest flavor
         default: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') }}
     secrets:
-      token:
+      token: 
+        description: >
+          GitHub token with permissions to access the repository.
+
+          Default: GitHub token (secrets.GITHUB_TOKEN)
         required: false
       registry-username:
+        description: >
+          Username for the target image registry to push the image to.
+
+          Default -> GitHub actor username (github.actor).
         required: false
       registry-token:
+        description: >
+          Token for the target image registry to push the image to.
+
+          Default -> If the registry is `ghcr.io`, 'secrets.token' is used.
+        required: false
+      source-registry-username:
+        description: >
+          Username for the source image registry to copy the image.
+
+          Only required when `image-artifact-backend: 'registry'`.
+
+          default: GitHub actor username (github.actor).
+        required: false
+      source-registry-token:
+        description: >
+          Token for the source image registry to copy the image.
+
+          Only required when `image-artifact-backend: 'registry'`.
+
+          Default -> If the registry is `ghcr.io`, 'secrets.token' is used.
         required: false
     outputs:
       image-id: 
@@ -42,41 +143,57 @@ on:
         value: ${{ jobs.publish.outputs.image-digest }}
       image-metadata: 
         value: ${{ jobs.publish.outputs.image-metadata }}
+      docker-meta-tags: 
+        value: ${{ jobs.publish.outputs.docker-meta-tags }}
+      docker-meta-labels: 
+        value: ${{ jobs.publish.outputs.docker-meta-labels }}
 
-jobs: 
+jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     outputs:
       docker-meta-tags: ${{ steps.meta.outputs.tags }}
       docker-meta-labels: ${{ steps.meta.outputs.labels }}
-      image-id: ${{ steps.build.outputs.imageid }}
-      image-digest: ${{ steps.build.outputs.digest }}
-      image-metadata: ${{ steps.build.outputs.metadata }}
+      image-id: ${{ steps.build-tarball.outputs.imageid }}
+      image-digest: ${{ steps.build-tarball.outputs.digest }}
+      image-metadata: ${{ steps.build-tarball.outputs.metadata }}
     steps:
     - uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
       with:
+        disable-sudo: true
         egress-policy: audit
-        
+        allowed-endpoints: >
+          api.github.com:443
+          auth.docker.io:443
+          github.com:443
+          production.cloudflare.docker.com:443
+          registry-1.docker.io:443
+
     - name: Checkout
       uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #6.0.1
+      with:
+        token: ${{ secrets.token }}
 
-    - name: "Download Pre-build Artifacts"
+    - name: Download Pre-build Artifacts
       uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #7.0.0
       with:
         pattern: pre-build-*
         merge-multiple: true
 
-    - name: "Download Build Artifacts"
+    - name: Download Build Artifacts
       uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #7.0.0
       with:
         pattern: build-*
         merge-multiple: true
 
-    - name: Extract Docker metadata
+    - name: Extract Image Metadata
       id: meta
       uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 #5.10.0
       with:
-        images: ${{ inputs.registry-prefix }}/${{ inputs.docker-image-repo }}/${{ inputs.docker-image-name }}
+        images: ${{ inputs.image-registry }}/${{ inputs.image-repo }}/${{ inputs.image-name }}
         tags: |
           type=semver,pattern={{version}},value=${{ inputs.version }}
           type=semver,pattern={{major}}.{{minor}},value=${{ inputs.version }}
@@ -92,19 +209,21 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 #3.11.1
 
-    - name: Login to Container Registry
+    - name: Login To Target Container Registry
       uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # 3.6.0
       with:
-        registry: ${{ inputs.registry-prefix }}
+        registry: ${{ inputs.image-registry }}
         username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
-        password: ${{ secrets.registry-token == '' && inputs.registry-prefix == 'ghcr.io' && secrets.token || secrets.registry-token }}
-
-    - name: Build and export Docker image
-      id: build
+        password: ${{ secrets.registry-token == '' && inputs.image-registry == 'ghcr.io' && secrets.token || secrets.registry-token }}
+    
+    - name: Build From GHA Cache And Push To Registry
+      if: inputs.image-artifact-backend == 'gh-artifacts'
+      id: build-tarball
       uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 #6.18.0
       with:
         context: .
         platforms: linux/amd64, linux/arm64
+        outputs: type=registry,oci-mediatypes=true,compression=estargz,compression-level=7,force-compression=true
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
@@ -113,3 +232,84 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
+    - name: Login To Source Container Registry
+      if: inputs.image-artifact-backend == 'registry' && (inputs.source-image-repo || inputs.source-image-name)
+      uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # 3.6.0
+      with:
+        registry: ${{ inputs.image-registry }}
+        username: ${{ secrets.source-registry-username == '' && github.actor || secrets.source-registry-username }}
+        password: ${{ secrets.source-registry-token == '' && inputs.image-registry == 'ghcr.io' && secrets.token || secrets.source-registry-token }}
+
+    - name: Build Ref Source Registry
+      if: inputs.image-artifact-backend == 'registry'
+      id: build-ref-source-registry
+      shell: bash
+      env:
+        IMAGE_REGISTRY: ${{ inputs.source-image-registry }}
+        IMAGE_REPO: ${{ inputs.source-image-repo }}
+        IMAGE_NAME: ${{ inputs.source-image-name }}
+      run: |
+        IMAGE_REF=""
+        if [[ ! -z "${IMAGE_REGISTRY}" ]]; then
+          IMAGE_REF+="${IMAGE_REGISTRY@L}/"
+        fi
+        if [[ ! -z "${IMAGE_REPO}" ]]; then
+          IMAGE_REF+="${IMAGE_REPO@L}/"
+        fi
+        if [[ ! -z "${IMAGE_NAME}" ]]; then
+          IMAGE_REF+="${IMAGE_NAME@L}"
+        fi
+
+        if [[ ! -z "${IMAGE_REF}" && ! -z "${IMAGE_DIGEST}" ]]; then
+          IMAGE_REF+="@${IMAGE_DIGEST}"
+        elif [[ ! -z "${IMAGE_REF}" && ! -z "${IMAGE_TAG}"  ]]; then
+          IMAGE_REF+=":${IMAGE_TAG@L}"
+        fi
+
+        echo "image-ref=$IMAGE_REF" >> "$GITHUB_OUTPUT"
+        echo "Image Ref ([<registry>/][<repo>/]<name>[:<tag>|@<digest>]): [$IMAGE_REF]"
+
+    - name: Build Ref Target Registry
+      if: inputs.image-artifact-backend == 'registry'
+      id: build-ref-target-registry
+      shell: bash
+      env:
+        IMAGE_REGISTRY: ${{ inputs.image-registry }}
+        IMAGE_REPO: ${{ inputs.image-repo }}
+        IMAGE_NAME: ${{ inputs.image-name }}
+      run: |
+        IMAGE_REF=""
+        if [[ ! -z "${IMAGE_REGISTRY}" ]]; then
+          IMAGE_REF+="${IMAGE_REGISTRY@L}/"
+        fi
+        if [[ ! -z "${IMAGE_REPO}" ]]; then
+          IMAGE_REF+="${IMAGE_REPO@L}/"
+        fi
+        if [[ ! -z "${IMAGE_NAME}" ]]; then
+          IMAGE_REF+="${IMAGE_NAME@L}"
+        fi
+
+        if [[ ! -z "${IMAGE_REF}" && ! -z "${IMAGE_DIGEST}" ]]; then
+          IMAGE_REF+="@${IMAGE_DIGEST}"
+        elif [[ ! -z "${IMAGE_REF}" && ! -z "${IMAGE_TAG}"  ]]; then
+          IMAGE_REF+=":${IMAGE_TAG@L}"
+        fi
+
+        echo "image-ref=$IMAGE_REF" >> "$GITHUB_OUTPUT"
+        echo "Image Ref ([<registry>/][<repo>/]<name>[:<tag>|@<digest>]): [$IMAGE_REF]"
+
+    - name: Copy Image From Source Registry To Target Registry
+      if: inputs.image-artifact-backend == 'registry'
+      shell: bash
+      env:
+        TAGS: ${{ steps.meta.outputs.tags }}
+        ANNOTATIONS: ${{ steps.meta.outputs.labels  }}
+      run: |
+        COMMAND="docker buildx imagetools create"
+        for tag in ${TAGS}; do
+          COMMAND+=" --tag ${tag}"
+        done
+        COMMAND+=" ${{ steps.build-ref-source-registry.outputs.image-ref }}:${{ inputs.version }}"
+
+        echo "Running command: [$COMMAND]"
+        eval "$COMMAND"
