@@ -41,3 +41,8 @@ The purpose of these workflows an actions is to provide a maintainable way to re
 - [soapui-testrunner](./.github/workflows/soapui-testrunner.md)
     Runs tests in a SoapUI and generates a report with the test results. The application/environment under test can be brought up with a 'Setup' script and cleaned up afterwards with a 'Teardown' script.
     After the 'Setup' script has been executed, the workflow will wait for the container's health endpoint to report 'Healthy'. Once the container is heathy, the SoapUI TestRunner will be executed.
+
+- [larva-testrunner](./.github/workflows/larva-testrunner.md)
+    Runs Larva testcases and generates a report with the test results. A Markdown version of the Larva test report is also generated and output as GitHub Actions run summary.
+
+    The application/environment under test can be brought up with a 'Setup' script and cleaned up afterwards with a 'Teardown' script. After the 'Setup' script has been executed, the workflow will wait for the container's health endpoint to report 'Healthy'. Once the container is healthy, the Larva Test runner will be executed.
