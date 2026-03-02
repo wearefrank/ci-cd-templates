@@ -89,7 +89,7 @@ runs:
 
   - name: Wait Till Healthy Container
     id: wait-till-healthy
-    uses: wearefrank/ci-cd-templates/wait-till-healthy-container@50a6bc0338691d1bb0112fb532d99ccee6e4ce30 #2.1.3
+    uses: wearefrank/ci-cd-templates/wait-till-healthy-container@91db6d687934fad2f4dac6ac5c4851cc40cf9a24 #2.2.0
     with:
       image-id: ${{ inputs.image-id }}
       image-name: ${{ inputs.image-ref || inputs.docker-image-tag }}

@@ -438,7 +438,7 @@ jobs:
         docker pull "${IMAGE_REF}"
 
     - name: Run Till Healthy
-      uses: wearefrank/ci-cd-templates/frank-run-till-healthy@frank-run-till-healthy-rename-and-use-wait-till-healthy-action
+      uses: wearefrank/ci-cd-templates/frank-run-till-healthy:v2.2.1
       with:
         image-ref: ${{ steps.build-image-ref.outputs.image-ref }}
 

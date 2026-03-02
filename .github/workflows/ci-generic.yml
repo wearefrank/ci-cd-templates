@@ -152,7 +152,7 @@ jobs:
       uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #6.0.1
 
     - name: Update Instance BuildInfo.properties
-      uses: wearefrank/ci-cd-templates/update-buildinfo@main
+      uses: wearefrank/ci-cd-templates/update-buildinfo@91db6d687934fad2f4dac6ac5c4851cc40cf9a24 #v2.2.0
       with:
         path: src/main/resources/BuildInfo.properties
         version: ${{ inputs.version }}
@@ -165,7 +165,7 @@ jobs:
         retention-days: 1
 
   docker-ci:
-    uses: wearefrank/ci-cd-templates/.github/workflows/docker-ci-generic.yml@generic-docker-ci-registry-backend
+    uses: wearefrank/ci-cd-templates/.github/workflows/docker-ci-generic.yml:v2.2.1
     needs: update-buildinfo
     secrets:
       token: ${{ secrets.token }}
