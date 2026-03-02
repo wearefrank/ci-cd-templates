@@ -202,13 +202,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
         with:
           token: ${{ secrets.token || secrets.GITHUB_TOKEN }}
       
       - name: Download Image Tarball Artifact
         if: inputs.image-artifact-backend == 'gh-artifacts'
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #7.0.0
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
         with:
           name: ${{ inputs.image-build-artifact-name }}
 
@@ -223,7 +223,7 @@ jobs:
 
       - name: Login to Container Registry
         if: inputs.image-artifact-backend == 'registry'
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # 3.6.0
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # 3.7.0
         with:
           registry: ${{ inputs.image-registry }}
           username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
@@ -255,7 +255,7 @@ jobs:
           image-name: ${{ inputs.image-ref }}
 
       - name: SoapUI TestRunner
-        uses: wearefrank/ci-cd-templates/soapui-testrunner@91db6d687934fad2f4dac6ac5c4851cc40cf9a24 #2.2.0
+        uses: wearefrank/ci-cd-templates/soapui-testrunner@a85b79cdca04aad14e78a668220e8dcda0c3ebd3 #2.2.3
         timeout-minutes: 15
         with:
           project-dir: ${{ inputs.project-dir }}
