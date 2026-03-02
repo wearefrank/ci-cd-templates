@@ -1,5 +1,22 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.2.0](https://github.com/wearefrank/ci-cd-templates/compare/v2.1.5...v2.2.0) (2026-03-02)
+
+### 🍕 Features
+
+* **docker-release-generic:** option to "copy" image from a given (staging) registry to the release registry. ([4e74715](https://github.com/wearefrank/ci-cd-templates/commit/4e74715c524c5d42b053e7476231184c2b37a2c7))
+* option to pull image from a given (snapshot) container registry instead of image tarball in 'workflows/soapui-testrunner.yml' ([4e46334](https://github.com/wearefrank/ci-cd-templates/commit/4e463344156c8f23c88b470cfac7d1d070cf1b42))
+* option to push the built image to a given (snapshot) container registry instead of using the exported image tarball via gh-artifacts in 'workflows/docker-ci-generic.yml' ([dd31de0](https://github.com/wearefrank/ci-cd-templates/commit/dd31de0fc5a5154b4891191300f0d53e53b11b9f))
+
+### 🎨 Styles
+
+* replace '! -z' with '-n' in bash conditions checking for an empty string ([83adaed](https://github.com/wearefrank/ci-cd-templates/commit/83adaed78d36c6d06c771ec67329f8929a4bffec))
+
+### 🧑‍💻 Code Refactoring
+
+* **frank-run-till-healthy-action:** flexible setup & teardown script option, use 'wait-till-healthy-container' action for logic and 'docker-image-tag' deprecation ([40eec7f](https://github.com/wearefrank/ci-cd-templates/commit/40eec7fb9bea1c6d7128f5aacd2a97534db610e5))
+* use registry image artifact backend by default ([2bc461a](https://github.com/wearefrank/ci-cd-templates/commit/2bc461aad7f370f893d7f747b1ced835394c7205))
+
 ## [2.1.5](https://github.com/wearefrank/ci-cd-templates/compare/v2.1.4...v2.1.5) (2026-02-12)
 
 ### 🧑‍💻 Code Refactoring
