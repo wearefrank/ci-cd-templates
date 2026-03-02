@@ -141,6 +141,8 @@ on:
         value: ${{ jobs.publish.outputs.image-id }}
       image-digest: 
         value: ${{ jobs.publish.outputs.image-digest }}
+      bake-file: 
+        value: ${{ jobs.publish.outputs.bake-file }}
       image-metadata: 
         value: ${{ jobs.publish.outputs.image-metadata }}
       docker-meta-tags: 
@@ -157,6 +159,7 @@ jobs:
     outputs:
       docker-meta-tags: ${{ steps.meta.outputs.tags }}
       docker-meta-labels: ${{ steps.meta.outputs.labels }}
+      bake-file: ${{ steps.meta.outputs.bake-file }}
       image-id: ${{ steps.build-tarball.outputs.imageid }}
       image-digest: ${{ steps.build-tarball.outputs.digest }}
       image-metadata: ${{ steps.build-tarball.outputs.metadata }}
