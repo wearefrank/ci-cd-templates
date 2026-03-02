@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.2.5](https://github.com/wearefrank/ci-cd-templates/compare/v2.2.4...v2.2.5) (2026-03-02)
+
+### 🧑‍💻 Code Refactoring
+
+* add bake-file definition to workflow outputs ([5c57da9](https://github.com/wearefrank/ci-cd-templates/commit/5c57da906b8b9cbd582f27a2ea1bf9f3d7221438))
+
 ## [2.2.4](https://github.com/wearefrank/ci-cd-templates/compare/v2.2.3...v2.2.4) (2026-03-02)
 
 ### 🤖 Build System
