@@ -250,19 +250,19 @@ jobs:
         IMAGE_NAME: ${{ inputs.source-image-name }}
       run: |
         IMAGE_REF=""
-        if [[ ! -z "${IMAGE_REGISTRY}" ]]; then
+        if [[ -n "${IMAGE_REGISTRY}" ]]; then
           IMAGE_REF+="${IMAGE_REGISTRY@L}/"
         fi
-        if [[ ! -z "${IMAGE_REPO}" ]]; then
+        if [[ -n "${IMAGE_REPO}" ]]; then
           IMAGE_REF+="${IMAGE_REPO@L}/"
         fi
-        if [[ ! -z "${IMAGE_NAME}" ]]; then
+        if [[ -n "${IMAGE_NAME}" ]]; then
           IMAGE_REF+="${IMAGE_NAME@L}"
         fi
 
-        if [[ ! -z "${IMAGE_REF}" && ! -z "${IMAGE_DIGEST}" ]]; then
+        if [[ -n "${IMAGE_REF}" && -n "${IMAGE_DIGEST}" ]]; then
           IMAGE_REF+="@${IMAGE_DIGEST}"
-        elif [[ ! -z "${IMAGE_REF}" && ! -z "${IMAGE_TAG}"  ]]; then
+        elif [[ -n "${IMAGE_REF}" && -n "${IMAGE_TAG}"  ]]; then
           IMAGE_REF+=":${IMAGE_TAG@L}"
         fi
 
@@ -279,19 +279,19 @@ jobs:
         IMAGE_NAME: ${{ inputs.image-name }}
       run: |
         IMAGE_REF=""
-        if [[ ! -z "${IMAGE_REGISTRY}" ]]; then
+        if [[ -n "${IMAGE_REGISTRY}" ]]; then
           IMAGE_REF+="${IMAGE_REGISTRY@L}/"
         fi
-        if [[ ! -z "${IMAGE_REPO}" ]]; then
+        if [[ -n "${IMAGE_REPO}" ]]; then
           IMAGE_REF+="${IMAGE_REPO@L}/"
         fi
-        if [[ ! -z "${IMAGE_NAME}" ]]; then
+        if [[ -n "${IMAGE_NAME}" ]]; then
           IMAGE_REF+="${IMAGE_NAME@L}"
         fi
 
-        if [[ ! -z "${IMAGE_REF}" && ! -z "${IMAGE_DIGEST}" ]]; then
+        if [[ -n "${IMAGE_REF}" && -n "${IMAGE_DIGEST}" ]]; then
           IMAGE_REF+="@${IMAGE_DIGEST}"
-        elif [[ ! -z "${IMAGE_REF}" && ! -z "${IMAGE_TAG}"  ]]; then
+        elif [[ -n "${IMAGE_REF}" && -n "${IMAGE_TAG}"  ]]; then
           IMAGE_REF+=":${IMAGE_TAG@L}"
         fi
 
