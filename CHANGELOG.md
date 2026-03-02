@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.2.7](https://github.com/wearefrank/ci-cd-templates/compare/v2.2.6...v2.2.7) (2026-03-02)
+
+### 🐛 Bug Fixes
+
+* incorrect meta step output variable referenced for bake-file ([4eb78ad](https://github.com/wearefrank/ci-cd-templates/commit/4eb78ad2efaa00a0d2b4d7c51f692e075e0488f6))
+
 ## [2.2.6](https://github.com/wearefrank/ci-cd-templates/compare/v2.2.5...v2.2.6) (2026-03-02)
 
 ### 🧑‍💻 Code Refactoring
