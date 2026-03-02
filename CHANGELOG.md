@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.2.3](https://github.com/wearefrank/ci-cd-templates/compare/v2.2.2...v2.2.3) (2026-03-02)
+
+### 🤖 Build System
+
+* **dependencies:** lock to commit hash for v2.2.2 ([87f30e4](https://github.com/wearefrank/ci-cd-templates/commit/87f30e4eb96045d95dc6d093a31b1ebb571e1b15))
+
 ## [2.2.2](https://github.com/wearefrank/ci-cd-templates/compare/v2.2.1...v2.2.2) (2026-03-02)
 
 ### 🤖 Build System
