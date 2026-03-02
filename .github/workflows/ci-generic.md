@@ -36,11 +36,6 @@ A SBOM(Software Bill Of Materials) and provenance information that describes how
 ### Requirements
 - This workflow only requires a version or reference to be available before calling this workflow.
 
-- Target registry credentials with read/write permission (e.g., DockerHub or GitHub Container Registry). When using GHCR, it is recommended to use the GITHUB_TOKEN if it has the correct permissions. Only required if "image-artifact-backend" `registry`.
-
-### Requirements
-- This workflow only requires a version or reference to be available before calling this workflow.
-
 - A GitHub PAT is NOT required as token. Using the default "secrets.GITHUB_TOKEN" with `package: write`, `content: read` permission is recommended.
 
 ## Usage
@@ -146,5 +141,6 @@ version-next:
 | image-id | sha:4564sdf54sdf44sdf4sdf4ds4f4sdf | Image id of the built docker image |
 | image-digest | sha:4564sdf54sdf44sdf4sdf4ds4f4sdf | Image digest of the built docker image |
 | image-metadata | JSON structure | Image metadata of the built docker image |
+| bake-file | JSON structure | Image bake-file definition |
 | docker-meta-tags | JSON array | Docker meta tags of the built docker image |
 | docker-meta-labels | JSON object | Docker meta labels of the built docker image |

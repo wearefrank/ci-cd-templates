@@ -250,5 +250,6 @@ extra-test:
 | image-id | sha:4564sdf54sdf44sdf4sdf4ds4f4sdf | Image id of the built docker image |
 | image-digest | sha:4564sdf54sdf44sdf4sdf4ds4f4sdf | Image digest of the built docker image |
 | image-metadata | JSON structure | Image metadata of the built docker image |
+| bake-file | JSON structure | Image bake-file definition |
 | docker-meta-tags | string | Docker meta tags |
 | docker-meta-labels | string | Docker meta labels |

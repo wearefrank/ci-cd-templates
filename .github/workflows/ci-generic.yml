@@ -127,6 +127,8 @@ on:
         value: ${{ jobs.docker-ci.outputs.image-id }}
       image-digest: 
         value: ${{ jobs.docker-ci.outputs.image-digest }}
+      bake-file: 
+        value: ${{ jobs.docker-ci.outputs.bake-file }}
       image-metadata: 
         value: ${{ jobs.docker-ci.outputs.image-metadata }}
       docker-meta-tags: 
@@ -165,7 +167,7 @@ jobs:
         retention-days: 1
 
   docker-ci:
-    uses: wearefrank/ci-cd-templates/.github/workflows/docker-ci-generic.yml@a85b79cdca04aad14e78a668220e8dcda0c3ebd3 #2.2.3
+    uses: wearefrank/ci-cd-templates/.github/workflows/docker-ci-generic.yml@3940db7721df9260928e215daa9a56d0a516433c #2.2.5
     needs: update-buildinfo
     secrets:
       token: ${{ secrets.token }}
