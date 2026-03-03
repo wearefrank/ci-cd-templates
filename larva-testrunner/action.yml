@@ -1,0 +1,101 @@
+name: Larva Testrunner
+description: Runs Larva testcases and generates a report with the test results.
+inputs:
+  container-id:
+    description: >
+      Container id of the running container with the aplication under test.
+
+      Note: The Image needs to be available to the local Docker runtime already.
+    required: true
+  upload-larva-testreport-artifact:
+    description: >
+      When 'true', the Larva testreport will be uploaded as a GitHub Artifact
+
+      Default: true
+    required: false
+    default: 'true'
+  larva-testreport-artifact-name:
+    description: >
+      Name of the GitHub Artifact the Larva testreport should be uploaded under.
+
+      Default: reports-larva-testreport
+    required: false
+    default: 'reports-larva-testreport'
+  larva-testreport-to-actions-summary:
+    description: >
+      When 'true', the Larva testreport will be printed to the GitHub Actions Summary.
+
+      Default: false
+    required: false
+    default: 'false'
+  larva-loglevel:
+    description: >
+      Log level for Larva test execution.
+
+      Default: 'WRONG_PIPELINE_MESSAGES_PREPARED_FOR_DIFF'
+    required: false
+    default: 'WRONG_PIPELINE_MESSAGES_PREPARED_FOR_DIFF'
+  larva-execution-target:
+    description: >
+      Path to the directory containing the Larva scenarios to be executed, relative to the container's filesystem.
+
+      Default: '/opt/frank/testtool'
+    required: false
+    default: '/opt/frank/testtool'
+
+runs:
+  using: "composite"
+  steps:
+    - name: List Local Images
+      if: runner.debug == '1'
+      shell: bash
+      run: |
+        docker ps -aq --no-trunc
+
+    - name: Run Larva Scenarios
+      shell: bash
+      env:
+        CONTAINER_ID: ${{ inputs.container-id }}
+        LARVA_LOGLEVEL: ${{ inputs.larva-loglevel }}
+        LARVA_EXECUTION_TARGET: ${{ inputs.larva-execution-target }}
+      run: |
+        docker exec "${CONTAINER_ID}" \
+          curl -X POST 'http://localhost:8080/iaf/larva/index.jsp' \
+          --header 'Content-Type: application/x-www-form-urlencoded' \
+          --data-urlencode 'scenariosrootdirectory=/opt/frank/testtool' \
+          --data-urlencode 'waitbeforecleanup=100' \
+          --data-urlencode 'loglevel="${LARVA_LOGLEVEL}"' \
+          --data-urlencode 'execute="${LARVA_EXECUTION_TARGET}"' \
+          --data-urlencode 'submit=start' > results.html
+
+    - name: Check Larva Test Results
+      shell: bash
+      run: |
+        if grep -q 'No scenarios found' results.html; then
+          echo "::warning title=Larva Testrunner::No Larva scenarios were found."
+          exit 0
+        elif ! grep -q 'All scenarios passed' results.html; then
+          echo "Not all scenarios passed. Failing the job."
+          exit 1
+        fi
+
+    - name: Generate Larva Test Report As Markdown
+      uses: docker://pandoc/core:3.5
+      if: ${{ always() }}
+      with:
+        args: -s results.html --from html -o results.md --to gfm --standalone
+
+    - name: Print Larva Report To GitHub Actions Summary
+      if: ${{ always() && inputs.larva-testreport-to-actions-summary == 'true' }}
+      shell: bash
+      run: |
+        cat results.md >> $GITHUB_STEP_SUMMARY
+
+    - name: Upload Larva Test Report Artifact
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #6.0.0
+      if: ${{ always() && inputs.upload-larva-testreport-artifact == 'true' }}
+      with:
+        name: ${{ inputs.larva-testreport-artifact-name }}
+        path: |
+          results.md
+          results.html
