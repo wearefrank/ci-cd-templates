@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.4.1](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.0...v2.4.1) (2026-03-03)
+
+### 🐛 Bug Fixes
+
+* source registry login uses target registry 'image-registry' input ([9e1ea77](https://github.com/wearefrank/ci-cd-templates/commit/9e1ea77ef2813a48451a6230bdeee54f5c698c33))
+
 ## [2.4.0](https://github.com/wearefrank/ci-cd-templates/compare/v2.3.0...v2.4.0) (2026-03-03)
 
 ### 🍕 Features
