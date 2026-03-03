@@ -241,7 +241,7 @@ jobs:
       with:
         registry: ${{ inputs.source-image-registry }}
         username: ${{ secrets.source-registry-username == '' && github.actor || secrets.source-registry-username }}
-        password: ${{ secrets.source-registry-token == '' && inputs.image-registry == 'ghcr.io' && secrets.token || secrets.source-registry-token }}
+        password: ${{ secrets.source-registry-token == '' && inputs.source-image-registry == 'ghcr.io' && secrets.token || secrets.source-registry-token }}
 
     - name: Build Ref Source Registry
       if: inputs.image-artifact-backend == 'registry'
