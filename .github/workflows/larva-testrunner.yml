@@ -239,7 +239,7 @@ jobs:
           image-name: ${{ inputs.image-ref }}
 
       - name: Run Larva Tests
-        uses: wearefrank/ci-cd-templates/larva-testrunner@929b26790a68351ac1bb454cf07bfd7eda43348b #2.3.0
+        uses: wearefrank/ci-cd-templates/larva-testrunner@1074786e366b2de4580133782e9dc404f2181210 #2.4.3
         timeout-minutes: 5
         with:
           container-id: ${{ steps.wait-till-healthy.outputs.container-id }}
