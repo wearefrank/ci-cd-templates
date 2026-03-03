@@ -64,8 +64,8 @@ runs:
           --header 'Content-Type: application/x-www-form-urlencoded' \
           --data-urlencode 'scenariosrootdirectory=/opt/frank/testtool' \
           --data-urlencode 'waitbeforecleanup=100' \
-          --data-urlencode 'loglevel="${LARVA_LOGLEVEL}"' \
-          --data-urlencode 'execute="${LARVA_EXECUTION_TARGET}"' \
+          --data-urlencode loglevel="${LARVA_LOGLEVEL}" \
+          --data-urlencode execute="${LARVA_EXECUTION_TARGET}" \
           --data-urlencode 'submit=start' > results.html
 
     - name: Check Larva Test Results
