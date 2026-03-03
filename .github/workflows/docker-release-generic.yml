@@ -239,7 +239,7 @@ jobs:
       if: inputs.image-artifact-backend == 'registry' && (inputs.source-image-repo || inputs.source-image-name)
       uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # 3.7.0
       with:
-        registry: ${{ inputs.image-registry }}
+        registry: ${{ inputs.source-image-registry }}
         username: ${{ secrets.source-registry-username == '' && github.actor || secrets.source-registry-username }}
         password: ${{ secrets.source-registry-token == '' && inputs.image-registry == 'ghcr.io' && secrets.token || secrets.source-registry-token }}
 
