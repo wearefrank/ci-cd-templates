@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.3.0](https://github.com/wearefrank/ci-cd-templates/compare/v2.2.7...v2.3.0) (2026-03-03)
+
+### 🍕 Features
+
+* larva-testrunner action ([#93](https://github.com/wearefrank/ci-cd-templates/issues/93)) ([678bc74](https://github.com/wearefrank/ci-cd-templates/commit/678bc74c0d4a4041d3dd9ee64d99e006cb4ca047))
+
 ## [2.2.7](https://github.com/wearefrank/ci-cd-templates/compare/v2.2.6...v2.2.7) (2026-03-02)
 
 ### 🐛 Bug Fixes
