@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.4.4](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.3...v2.4.4) (2026-03-04)
+
+### 🤖 Build System
+
+* **dependencies:** bump larva-testrunner action to v2.4.3 ([#96](https://github.com/wearefrank/ci-cd-templates/issues/96)) ([ecbe3d2](https://github.com/wearefrank/ci-cd-templates/commit/ecbe3d2ec7acf958793510d710b42d9fc6b7d5e4))
+
 ## [2.4.3](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.2...v2.4.3) (2026-03-04)
 
 ### 🐛 Bug Fixes
