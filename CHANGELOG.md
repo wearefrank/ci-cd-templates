@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.4.5](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.4...v2.4.5) (2026-03-04)
+
+### 🐛 Bug Fixes
+
+* docker release image copy fails when target registry is not the same as the source registry ([#97](https://github.com/wearefrank/ci-cd-templates/issues/97)) ([eb16669](https://github.com/wearefrank/ci-cd-templates/commit/eb166695fe3c9bfb1ca7922192ae3b2f53c95916))
+
 ## [2.4.4](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.3...v2.4.4) (2026-03-04)
 
 ### 🤖 Build System
