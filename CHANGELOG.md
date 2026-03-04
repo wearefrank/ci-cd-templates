@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.4.3](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.2...v2.4.3) (2026-03-04)
+
+### 🐛 Bug Fixes
+
+* larva curl call env var references are not getting substituted ([8f92fc9](https://github.com/wearefrank/ci-cd-templates/commit/8f92fc97bfd90296100b94dcefe8fcf7bf1217f7))
+
 ## [2.4.2](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.1...v2.4.2) (2026-03-03)
 
 ### 🐛 Bug Fixes
