@@ -249,7 +249,7 @@ jobs:
       
       - name: Wait Till Healthy Container
         id: wait-till-healthy
-        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@591db6d687934fad2f4dac6ac5c4851cc40cf9a24 #2.2.0
+        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@f497e160d12e5b4c5e7685038aaf6e89ff87628d #2.4.5
         with:
           image-id: ${{ inputs.image-id }}
           image-name: ${{ inputs.image-ref }}
