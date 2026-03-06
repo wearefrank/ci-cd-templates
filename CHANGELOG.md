@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.4.8](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.7...v2.4.8) (2026-03-06)
+
+### 🤖 Build System
+
+* **dependencies:** bump wait-till-healthy-container to v2.4.5 in soapui-testrunner workflow ([2f1293b](https://github.com/wearefrank/ci-cd-templates/commit/2f1293b5d818eed96ba98fbe71a15b7ecd465d2a))
+
 ## [2.4.7](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.6...v2.4.7) (2026-03-06)
 
 ### 🤖 Build System
