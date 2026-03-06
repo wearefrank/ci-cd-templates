@@ -139,8 +139,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       contents: read
       packages: write
+      attestations: write
     outputs:
       docker-meta-tags: ${{ steps.meta.outputs.tags }}
       docker-meta-labels: ${{ steps.meta.outputs.labels }}
@@ -212,7 +214,7 @@ jobs:
       with:
         context: .
         platforms: linux/amd64
-        outputs: type=docker,dest=${{ inputs.image-artifact-file }},oci-mediatypes=true,compression=estargz,compression-level=7,force-compression=true
+        outputs: type=docker,dest=${{ inputs.image-artifact-file }},oci-mediatypes=true,oci-artifact=true,compression=estargz,compression-level=5,force-compression=true
         push: false
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
@@ -256,7 +258,7 @@ jobs:
       with:
         context: .
         platforms: linux/amd64, linux/arm64
-        outputs: type=registry,oci-mediatypes=true,compression=estargz,compression-level=7,force-compression=true
+        outputs: type=registry,oci-mediatypes=true,oci-artifact=true,compression=estargz,compression-level=5,force-compression=true
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}

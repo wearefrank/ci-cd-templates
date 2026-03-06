@@ -154,8 +154,10 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       contents: read
       packages: write
+      attestations: write
     outputs:
       docker-meta-tags: ${{ steps.meta.outputs.tags }}
       docker-meta-labels: ${{ steps.meta.outputs.labels }}
