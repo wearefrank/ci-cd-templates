@@ -136,6 +136,11 @@ on:
       docker-meta-labels: 
         value: ${{ jobs.docker-ci.outputs.docker-meta-labels }}
 
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+  attestations: write
 
 jobs:
   update-buildinfo:
@@ -169,6 +174,11 @@ jobs:
   docker-ci:
     uses: wearefrank/ci-cd-templates/.github/workflows/docker-ci-generic.yml@500c3797fcbf98357d736d0378cada0ce69a1b20 #2.4.6
     needs: update-buildinfo
+    permissions:
+      id-token: write
+      contents: read
+      packages: write
+      attestations: write
     secrets:
       token: ${{ secrets.token }}
       registry-username: ${{ secrets.registry-username || github.actor }}
