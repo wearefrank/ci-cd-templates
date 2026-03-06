@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.4.6](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.5...v2.4.6) (2026-03-06)
+
+### 🐛 Bug Fixes
+
+* push image attestations as OCI artifacts ([#99](https://github.com/wearefrank/ci-cd-templates/issues/99)) ([5ac8ecf](https://github.com/wearefrank/ci-cd-templates/commit/5ac8ecf476a615758be035fe6678c9efc23642ca))
+
 ## [2.4.5](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.4...v2.4.5) (2026-03-04)
 
 ### 🐛 Bug Fixes
