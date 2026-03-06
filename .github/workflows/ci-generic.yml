@@ -167,7 +167,7 @@ jobs:
         retention-days: 1
 
   docker-ci:
-    uses: wearefrank/ci-cd-templates/.github/workflows/docker-ci-generic.yml@3940db7721df9260928e215daa9a56d0a516433c #2.2.5
+    uses: wearefrank/ci-cd-templates/.github/workflows/docker-ci-generic.yml@500c3797fcbf98357d736d0378cada0ce69a1b20 #2.4.6
     needs: update-buildinfo
     secrets:
       token: ${{ secrets.token }}
