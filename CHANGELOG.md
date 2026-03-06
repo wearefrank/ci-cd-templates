@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.4.7](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.6...v2.4.7) (2026-03-06)
+
+### 🤖 Build System
+
+* **dependencies:** bump docker-ci-generic and docker-release-generic to v2.4.6 ([#100](https://github.com/wearefrank/ci-cd-templates/issues/100)) ([1d95516](https://github.com/wearefrank/ci-cd-templates/commit/1d95516868c95868bf1156e7ec9ffa82572f81ed))
+
 ## [2.4.6](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.5...v2.4.6) (2026-03-06)
 
 ### 🐛 Bug Fixes
