@@ -223,7 +223,7 @@ jobs:
 
       - name: Login to Container Registry
         if: inputs.image-artifact-backend == 'registry'
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # 3.7.0
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # 4.0.0
         with:
           registry: ${{ inputs.image-registry }}
           username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
@@ -249,13 +249,13 @@ jobs:
       
       - name: Wait Till Healthy Container
         id: wait-till-healthy
-        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@f497e160d12e5b4c5e7685038aaf6e89ff87628d #2.4.5
+        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@c5e8d21f01cf6dacd9b7ccbca6c675b90f951750 #2.4.8
         with:
           image-id: ${{ inputs.image-id }}
           image-name: ${{ inputs.image-ref }}
 
       - name: SoapUI TestRunner
-        uses: wearefrank/ci-cd-templates/soapui-testrunner@a85b79cdca04aad14e78a668220e8dcda0c3ebd3 #2.2.3
+        uses: wearefrank/ci-cd-templates/soapui-testrunner@c5e8d21f01cf6dacd9b7ccbca6c675b90f951750 #2.4.8
         timeout-minutes: 15
         with:
           project-dir: ${{ inputs.project-dir }}

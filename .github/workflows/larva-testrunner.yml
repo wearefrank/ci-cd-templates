@@ -207,7 +207,7 @@ jobs:
 
       - name: Login to Container Registry
         if: inputs.image-artifact-backend == 'registry'
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # 3.7.0
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # 4.0.0
         with:
           registry: ${{ steps.parse-image-ref.outputs.image-registry }}
           username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
@@ -233,13 +233,13 @@ jobs:
       
       - name: Wait Till Healthy Container
         id: wait-till-healthy
-        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@3b754d066048b7b9fceb423c2ca9d204cc0a3878 #2.2.4
+        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@c5e8d21f01cf6dacd9b7ccbca6c675b90f951750 #2.4.8
         with:
           image-id: ${{ inputs.image-id }}
           image-name: ${{ inputs.image-ref }}
 
       - name: Run Larva Tests
-        uses: wearefrank/ci-cd-templates/larva-testrunner@1074786e366b2de4580133782e9dc404f2181210 #2.4.3
+        uses: wearefrank/ci-cd-templates/larva-testrunner@c5e8d21f01cf6dacd9b7ccbca6c675b90f951750 #2.4.8
         timeout-minutes: 5
         with:
           container-id: ${{ steps.wait-till-healthy.outputs.container-id }}
