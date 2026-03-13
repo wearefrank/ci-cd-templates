@@ -163,7 +163,7 @@ jobs:
       
       - name: Download Image Tarball Artifact
         if: inputs.image-artifact-backend == 'gh-artifacts'
-        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
         with:
           name: ${{ inputs.image-artifact-name }}
 
@@ -233,13 +233,13 @@ jobs:
       
       - name: Wait Till Healthy Container
         id: wait-till-healthy
-        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@c5e8d21f01cf6dacd9b7ccbca6c675b90f951750 #2.4.8
+        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@d7447a21c0c753a1e0869cfa87aff768454a667b #2.4.9
         with:
           image-id: ${{ inputs.image-id }}
           image-name: ${{ inputs.image-ref }}
 
       - name: Run Larva Tests
-        uses: wearefrank/ci-cd-templates/larva-testrunner@c5e8d21f01cf6dacd9b7ccbca6c675b90f951750 #2.4.8
+        uses: wearefrank/ci-cd-templates/larva-testrunner@d7447a21c0c753a1e0869cfa87aff768454a667b #2.4.9
         timeout-minutes: 5
         with:
           container-id: ${{ steps.wait-till-healthy.outputs.container-id }}

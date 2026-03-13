@@ -168,13 +168,13 @@ jobs:
         token: ${{ secrets.token }}
 
     - name: Download Pre-build Artifacts
-      uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
       with:
         pattern: pre-build-*
         merge-multiple: true
 
     - name: Download Build Artifacts
-      uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
       with:
         pattern: build-*
         merge-multiple: true
@@ -296,7 +296,7 @@ jobs:
 
     - name: Lint Dockerfile with Checkov
       id: checkov
-      uses: bridgecrewio/checkov-action@4b38516b47b2df46475d84383f9aa2c8ef912aae #12.3087.0
+      uses: bridgecrewio/checkov-action@f9b0a2206b0401cad02ac0a66be2a7934a5be838 #12.3088.0
       with:
         directory: .
         framework: dockerfile
@@ -325,7 +325,7 @@ jobs:
   #   steps:
   #   -  
   #     name: "Download Docker tar"
-  #     uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+  #     uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
   #     with:
   #       name: docker
   #       path: .
@@ -384,7 +384,7 @@ jobs:
 
     - name: Download Image Tarball Artifact
       if: inputs.image-artifact-backend == 'gh-artifacts'
-      uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
       with:
         name: ${{ inputs.image-artifact-name }}
 
@@ -443,7 +443,7 @@ jobs:
         docker pull "${IMAGE_REF}"
 
     - name: Run Till Healthy
-      uses: wearefrank/ci-cd-templates/frank-run-till-healthy@c5e8d21f01cf6dacd9b7ccbca6c675b90f951750 #2.2.0
+      uses: wearefrank/ci-cd-templates/frank-run-till-healthy@d7447a21c0c753a1e0869cfa87aff768454a667b #2.2.0
       with:
         image-ref: ${{ steps.build-image-ref.outputs.image-ref }}
 
