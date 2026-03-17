@@ -1,0 +1,294 @@
+name: Docker Bake And Push
+
+on:
+  workflow_call:
+    inputs:
+      image-artifact-backend:
+        type: string
+        default: 'registry'
+        description: >
+          The method used for sharing the image artifact between jobs.
+          
+          The 'gh-artifacts' method downloads and loads an exported Docker Image Tarball, that was uploaded to GitHub Actions Storage in a previous CI job. 
+          The 'registry' method pulls the image from an (snapshot) image registry, that was pushed to the registry in a previous CI job.
+
+          Options:
+          - 'gh-artifacts': Share the image artifact as Tarball, uploaded/downloaded via Github Artifact Storage. When this option is used, both `image-build-artifact-name` and `image-tarball-file` are used.
+          - 'registry': Share the image artifact via a (snapshot) registry. When this option is used, both `registry-username`, `registry-token` need to be provided or alternatively `token` can be used when the registry is `ghcr.io` and the token has appropriate permissions.
+
+          default: 'registry'
+        required: false
+      image-artifact-name:
+        type: string
+        description: >
+          Name of the artifact to upload to GitHub Actions Storage, that contains the exported Docker Image Tarball.
+
+          Only required when `image-artifact-backend: 'gh-artifacts'`.
+
+          Default: 'build-docker-image'
+        required: false
+        default: 'build-docker-image'
+      image-artifact-file:
+        type: string
+        description: >
+          Path and filename of the exported Docker Image Tarball, that is to be uploaded to GitHub Actions Storage.
+
+          Only required when `image-artifact-backend: 'gh-artifacts'`.
+
+          Default: 'image.tar'
+        required: false
+        default: 'image.tar'
+      docker-image-repo:
+        description: >
+          DEPRECATED in favor of `image-repo`.
+
+          Docker image repository. Default -> GitHub repository owner/organisation.
+        type: string
+        required: false
+        default: ${{ github.repository_owner }}
+      docker-image-name:
+        description: >
+          DEPRECATED in favor of `image-name`.
+
+          Docker image name. Default -> GitHub repository name.
+        type: string
+        required: false
+        default: ${{ github.event.repository.name }}
+      image-registry:
+        description: Image registry prefix (e.g. ghcr.io, docker.io)
+        type: string
+        required: false
+        default: 'ghcr.io'
+      image-repo:
+        description: >
+          Image repository(e.g. wearefrank, my-github-username). Default -> GitHub repository owner/organisation.
+
+          default -> GitHub repository owner/organisation.
+        type: string
+        required: false
+        default: ${{ inputs.docker-image-repo || github.repository_owner }}
+      image-name:
+        description: >
+          Image name(e.g. zaakbrug, frankframework).
+          
+          default -> GitHub repository name.
+        type: string
+        required: false
+        default: ${{ inputs.docker-image-name || github.event.repository.name }}
+      version:
+        type: string
+        required: false
+        description: Semvers string. If empty, the ref/tag will be used (if on.tag trigger).
+        default: ''
+      latest-tag:
+        type: boolean
+        required: false
+        description: Add latest flavor
+        default: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') }}
+      meta-tags:
+        type: string
+        required: false
+        description: >
+          Additional [meta tags](https://github.com/docker/metadata-action?tab=readme-ov-file#tags-input) to add to the image, separated by newlines. (e.g. "type=ref,event=pr").
+        default: ''
+      meta-flavor:
+        type: string
+        required: false
+        description: >
+          Additional [meta flavor](https://github.com/docker/metadata-action?tab=readme-ov-file#flavor-input) to add to the image. (e.g. "suffix=debian").
+        default: ''
+      bake-target:
+        type: string
+        required: false
+        description: >
+          Bake target to execute. Multiline string or comma-separated list. (e.g. "debian,ubuntu,redhat").
+
+          default: 'default'
+        default: 'default'
+    secrets:
+      token: 
+        description: >
+          GitHub token with permissions to access the repository.
+
+          default: GitHub token (secrets.GITHUB_TOKEN)
+        required: false
+      registry-username:
+        description: >
+          Username for the registry.
+
+          Only required when `image-artifact-backend: 'registry'`.
+
+          default: GitHub actor username (github.actor).
+        required: false
+      registry-token:
+        description: >
+          Token for the registry
+
+          Only required when `image-artifact-backend: 'registry'`.
+        required: false
+    outputs:
+      image-id: 
+        value: ${{ jobs.build.outputs.image-id }}
+      image-digest: 
+        value: ${{ jobs.build.outputs.image-digest }}
+      bake-file: 
+        value: ${{ jobs.build.outputs.bake-file }}
+      image-metadata: 
+        value: ${{ jobs.build.outputs.image-metadata }}
+      docker-meta-tags: 
+        value: ${{ jobs.build.outputs.docker-meta-tags }}
+      docker-meta-labels: 
+        value: ${{ jobs.build.outputs.docker-meta-labels }}
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.generate.outputs.matrix }}
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
+      -
+        name: Generate matrix
+        id: generate
+        uses: docker/bake-action/subaction/matrix@v7
+        with:
+          target: ${{ inputs.bake-target }}
+          fields: platforms
+
+  build:
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+    permissions:
+      id-token: write
+      contents: read
+      packages: write
+      attestations: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    outputs:
+      docker-meta-tags: ${{ steps.meta.outputs.tags }}
+      docker-meta-labels: ${{ steps.meta.outputs.labels }}
+      bake-file: ${{ steps.meta.outputs.json }}
+      image-id: ${{ steps.build-registry.outputs.imageid }}
+      image-digest: ${{ steps.build-registry.outputs.digest }}
+      image-metadata: ${{ steps.build-registry.outputs.metadata }}
+    steps:
+    - uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+      with:
+        disable-sudo: true
+        egress-policy: audit
+        allowed-endpoints: >
+          api.github.com:443
+          auth.docker.io:443
+          github.com:443
+          production.cloudflare.docker.com:443
+          registry-1.docker.io:443
+
+    - name: Checkout
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
+      with:
+        token: ${{ secrets.token }}
+
+    - name: Download Pre-build Artifacts
+      uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+      with:
+        pattern: pre-build-*
+        merge-multiple: true
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+      with:
+        pattern: build-*
+        merge-multiple: true
+
+    - name: Generate Default Meta Tags
+      if: ${{ !inputs.meta-tags }}
+      id: generate-meta-tags
+      run: |
+        {
+          echo 'meta-tags<<EOF'
+          echo 'type=semver,pattern={{version}},value=${{ inputs.version }}'
+          echo 'type=semver,pattern={{major}}.{{minor}},value=${{ inputs.version }}'
+          echo 'type=semver,pattern={{major}},value=${{ inputs.version }}'
+          echo 'type=ref,event=pr'
+          echo 'type=raw,value=latest,enable=${{ inputs.latest-tag }}'
+          echo 'EOF'
+        } | tee -a "$GITHUB_OUTPUT"
+          
+
+    - name: Extract Image Metadata
+      id: meta
+      uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf #6.0.0
+      with:
+        images: ${{ inputs.image-registry }}/${{ inputs.image-repo }}/${{ inputs.image-name }}
+        tags: ${{ inputs.meta-tags || steps.generate-meta-tags.outputs.meta-tags }}
+        flavor: |
+          latest=false
+          ${{ inputs.meta-flavor }}
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a #4.0.0
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd #4.0.0
+
+    - name: Login to Container Registry
+      if: inputs.image-artifact-backend == 'registry'
+      uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # 4.0.0
+      with:
+        registry: ${{ inputs.image-registry }}
+        username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
+        password: ${{ secrets.registry-token == '' && inputs.image-registry == 'ghcr.io' && secrets.token || secrets.registry-token }}
+
+    - name: Build Cache Ref
+      if: inputs.image-artifact-backend == 'registry'
+      id: build-cache-ref
+      shell: bash
+      env:
+        IMAGE_REGISTRY: ${{ inputs.image-registry }}
+        IMAGE_REPO: ${{ inputs.image-repo }}
+        IMAGE_NAME: ${{ inputs.image-name }}
+        IMAGE_TAG: 'buildcache'
+      run: |
+        IMAGE_REF=""
+        if [[ -n "${IMAGE_REGISTRY}" ]]; then
+          IMAGE_REF+="${IMAGE_REGISTRY@L}/"
+        fi
+        if [[ -n "${IMAGE_REPO}" ]]; then
+          IMAGE_REF+="${IMAGE_REPO@L}/"
+        fi
+        if [[ -n "${IMAGE_NAME}" ]]; then
+          IMAGE_REF+="${IMAGE_NAME@L}"
+        fi
+
+        if [[ -n "${IMAGE_REF}" && -n "${IMAGE_DIGEST}" ]]; then
+          IMAGE_REF+="@${IMAGE_DIGEST}"
+        elif [[ -n "${IMAGE_REF}" && -n "${IMAGE_TAG}"  ]]; then
+          IMAGE_REF+=":${IMAGE_TAG@L}"
+        fi
+
+        echo "image-ref=$IMAGE_REF" >> "$GITHUB_OUTPUT"
+        echo "Image Ref ([<registry>/][<repo>/]<name>[:<tag>|@<digest>]): [$IMAGE_REF]"
+
+    - name: Build
+      id: build-registry
+      uses: docker/bake-action@v7
+      with:
+        source: .
+        files: |
+          ./docker-bake.hcl
+          cwd://${{ steps.meta.outputs.bake-file }}
+        targets: ${{ inputs.bake-target }}
+        set: |
+          *.output=type=registry,oci-mediatypes=true,oci-artifact=true,compression=estargz,compression-level=5,force-compression=true
+          *.cache-to=type=registry,ref=${{ steps.build-cache-ref.outputs.image-ref }}
+          *.cache-from=type=registry,ref=${{ steps.build-cache-ref.outputs.image-ref }}
+          *.platform=${{ matrix.platforms }}
+        push: true
+        provenance: true
+        sbom: true
