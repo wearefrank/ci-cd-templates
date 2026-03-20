@@ -143,7 +143,7 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+    - uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
       with:
         disable-sudo: true
         egress-policy: audit
@@ -154,7 +154,7 @@ jobs:
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
 
     - name: Update Instance BuildInfo.properties
-      uses: wearefrank/ci-cd-templates/update-buildinfo@c5e8d21f01cf6dacd9b7ccbca6c675b90f951750 #2.4.8
+      uses: wearefrank/ci-cd-templates/update-buildinfo@d7447a21c0c753a1e0869cfa87aff768454a667b #2.4.9
       with:
         path: src/main/resources/BuildInfo.properties
         version: ${{ inputs.version }}
@@ -167,7 +167,7 @@ jobs:
         retention-days: 1
 
   docker-ci:
-    uses: wearefrank/ci-cd-templates/.github/workflows/docker-ci-generic.yml@c5e8d21f01cf6dacd9b7ccbca6c675b90f951750 #2.4.8
+    uses: wearefrank/ci-cd-templates/.github/workflows/docker-ci-generic.yml@d7447a21c0c753a1e0869cfa87aff768454a667b #2.4.9
     needs: update-buildinfo
     secrets:
       token: ${{ secrets.token }}
