@@ -166,7 +166,7 @@ jobs:
       image-digest: ${{ steps.build-tarball.outputs.digest }}
       image-metadata: ${{ steps.build-tarball.outputs.metadata }}
     steps:
-    - uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+    - uses: step-security/harden-runner@6c3c2f2c1c457b00c10c4848d6f5491db3b629df # v2.18.0
       with:
         disable-sudo: true
         egress-policy: audit
@@ -184,14 +184,14 @@ jobs:
 
     - name: Download Pre-build Artifacts
       if: inputs.image-artifact-backend == 'gh-artifacts'
-      uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
       with:
         pattern: pre-build-*
         merge-multiple: true
 
     - name: Download Build Artifacts
       if: inputs.image-artifact-backend == 'gh-artifacts'
-      uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
       with:
         pattern: build-*
         merge-multiple: true
@@ -219,7 +219,7 @@ jobs:
       uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd #4.0.0
 
     - name: Login To Target Container Registry
-      uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # 4.0.0
+      uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # 4.1.0
       with:
         registry: ${{ inputs.image-registry }}
         username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
@@ -228,7 +228,7 @@ jobs:
     - name: Build From GHA Cache And Push To Registry
       if: inputs.image-artifact-backend == 'gh-artifacts'
       id: build-tarball
-      uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 #7.0.0
+      uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f #7.1.0
       with:
         context: .
         platforms: linux/amd64, linux/arm64
@@ -243,7 +243,7 @@ jobs:
 
     - name: Login To Source Container Registry
       if: inputs.image-artifact-backend == 'registry' && (inputs.source-image-repo || inputs.source-image-name)
-      uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # 4.0.0
+      uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # 4.1.0
       with:
         registry: ${{ inputs.source-image-registry }}
         username: ${{ secrets.source-registry-username == '' && github.actor || secrets.source-registry-username }}
@@ -279,7 +279,7 @@ jobs:
         echo "Image Ref ([<registry>/][<repo>/]<name>[:<tag>|@<digest>]): [$IMAGE_REF]"
 
     - name: Setup Go
-      uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 #6.3.0
+      uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c #6.4.0
       if: inputs.image-artifact-backend == 'registry'
       with:
         go-version: 1.26
