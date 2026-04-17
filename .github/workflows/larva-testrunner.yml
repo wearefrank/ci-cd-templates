@@ -163,7 +163,7 @@ jobs:
       
       - name: Download Image Tarball Artifact
         if: inputs.image-artifact-backend == 'gh-artifacts'
-        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
         with:
           name: ${{ inputs.image-artifact-name }}
 
@@ -179,7 +179,7 @@ jobs:
       - name: Parse Image Ref
         id: parse-image-ref
         if: inputs.image-artifact-backend == 'registry'
-        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd #8.0.0
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 #9.0.0
         with:
           debug: true
           script: |
@@ -207,7 +207,7 @@ jobs:
 
       - name: Login to Container Registry
         if: inputs.image-artifact-backend == 'registry'
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # 4.0.0
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # 4.1.0
         with:
           registry: ${{ steps.parse-image-ref.outputs.image-registry }}
           username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
@@ -233,13 +233,13 @@ jobs:
       
       - name: Wait Till Healthy Container
         id: wait-till-healthy
-        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@c5e8d21f01cf6dacd9b7ccbca6c675b90f951750 #2.4.8
+        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@d7447a21c0c753a1e0869cfa87aff768454a667b #2.4.9
         with:
           image-id: ${{ inputs.image-id }}
           image-name: ${{ inputs.image-ref }}
 
       - name: Run Larva Tests
-        uses: wearefrank/ci-cd-templates/larva-testrunner@c5e8d21f01cf6dacd9b7ccbca6c675b90f951750 #2.4.8
+        uses: wearefrank/ci-cd-templates/larva-testrunner@d7447a21c0c753a1e0869cfa87aff768454a667b #2.4.9
         timeout-minutes: 5
         with:
           container-id: ${{ steps.wait-till-healthy.outputs.container-id }}

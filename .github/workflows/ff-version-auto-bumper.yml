@@ -89,7 +89,7 @@ jobs:
 
     - name: Login to Container Registry
       if: env.DOCKERHUB_USERNAME && env.DOCKERHUB_TOKEN
-      uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # 4.0.0
+      uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # 4.1.0
       with:
         username: ${{ secrets.dockerhub-username }}
         password: ${{ secrets.dockerhub-token }}

@@ -151,7 +151,7 @@ jobs:
       image-digest: ${{ steps.build-tarball.outputs.digest || steps.build-registry.outputs.digest }}
       image-metadata: ${{ steps.build-tarball.outputs.metadata || steps.build-registry.outputs.metadata }}
     steps:
-    - uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+    - uses: step-security/harden-runner@6c3c2f2c1c457b00c10c4848d6f5491db3b629df # v2.18.0
       with:
         disable-sudo: true
         egress-policy: audit
@@ -168,13 +168,13 @@ jobs:
         token: ${{ secrets.token }}
 
     - name: Download Pre-build Artifacts
-      uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
       with:
         pattern: pre-build-*
         merge-multiple: true
 
     - name: Download Build Artifacts
-      uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
       with:
         pattern: build-*
         merge-multiple: true
@@ -201,7 +201,7 @@ jobs:
 
     - name: Login to Container Registry
       if: inputs.image-artifact-backend == 'registry'
-      uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # 4.0.0
+      uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # 4.1.0
       with:
         registry: ${{ inputs.image-registry }}
         username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
@@ -210,7 +210,7 @@ jobs:
     - name: Build And Export To Tarball
       if: inputs.image-artifact-backend == 'gh-artifacts'
       id: build-tarball
-      uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 #7.0.0
+      uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f #7.1.0
       with:
         context: .
         platforms: linux/amd64
@@ -254,7 +254,7 @@ jobs:
     - name: Build And Push To Registry
       if: inputs.image-artifact-backend == 'registry'
       id: build-registry
-      uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 #7.0.0
+      uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f #7.1.0
       with:
         context: .
         platforms: linux/amd64, linux/arm64
@@ -269,7 +269,7 @@ jobs:
 
     - name: Upload Image Tarball as Artifact
       if: inputs.image-artifact-backend == 'gh-artifacts'
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #7.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #7.0.1
       with:
         name: ${{ inputs.image-artifact-name }}
         path: ${{ inputs.image-artifact-file }}
@@ -281,7 +281,7 @@ jobs:
       contents: read 
     if: inputs.chekov-linter-enabled
     steps:
-    - uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+    - uses: step-security/harden-runner@6c3c2f2c1c457b00c10c4848d6f5491db3b629df # v2.18.0
       with:
         disable-sudo: true
         egress-policy: audit
@@ -296,7 +296,7 @@ jobs:
 
     - name: Lint Dockerfile with Checkov
       id: checkov
-      uses: bridgecrewio/checkov-action@4b38516b47b2df46475d84383f9aa2c8ef912aae #12.3087.0
+      uses: bridgecrewio/checkov-action@de2bfaecd21d58ef232e0d2a3391c33c32c460d7 #12.3096.0
       with:
         directory: .
         framework: dockerfile
@@ -308,13 +308,13 @@ jobs:
         output_file_path: reports/checkov-results.sarif
 
     - name: Upload Sarif report as artifact
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #7.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #7.0.1
       with:
         name: report-checkov-results
         path: reports/checkov-results.sarif
 
     - name: Upload to GitHub Security
-      uses: github/codeql-action/upload-sarif@0d579ffd059c29b07949a3cce3983f0780820c98 #4.32.6
+      uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 #4.35.2
       if: inputs.upload-sarif-to-security
       with:
         sarif_file: 'reports/checkov-results.sarif'
@@ -325,7 +325,7 @@ jobs:
   #   steps:
   #   -  
   #     name: "Download Docker tar"
-  #     uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+  #     uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
   #     with:
   #       name: docker
   #       path: .
@@ -351,7 +351,7 @@ jobs:
   #       hide-progress: false
   #   - 
   #     name: "Upload Sarif report as artifact"
-  #     uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #7.0.0
+  #     uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a #7.0.1
   #     with:
   #       name: trivy-results
   #       path: trivy-results.sarif
@@ -370,7 +370,7 @@ jobs:
       packages: read
     needs: build
     steps:
-    - uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+    - uses: step-security/harden-runner@6c3c2f2c1c457b00c10c4848d6f5491db3b629df # v2.18.0
       with:
         disable-sudo: true
         egress-policy: audit
@@ -384,7 +384,7 @@ jobs:
 
     - name: Download Image Tarball Artifact
       if: inputs.image-artifact-backend == 'gh-artifacts'
-      uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 #8.0.0
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
       with:
         name: ${{ inputs.image-artifact-name }}
 
@@ -397,7 +397,7 @@ jobs:
 
     - name: Login to Container Registry
       if: inputs.image-artifact-backend == 'registry'
-      uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # 4.0.0
+      uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # 4.1.0
       with:
         registry: ${{ inputs.image-registry }}
         username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
@@ -443,7 +443,7 @@ jobs:
         docker pull "${IMAGE_REF}"
 
     - name: Run Till Healthy
-      uses: wearefrank/ci-cd-templates/frank-run-till-healthy@c5e8d21f01cf6dacd9b7ccbca6c675b90f951750 #2.2.0
+      uses: wearefrank/ci-cd-templates/frank-run-till-healthy@d7447a21c0c753a1e0869cfa87aff768454a667b #2.2.0
       with:
         image-ref: ${{ steps.build-image-ref.outputs.image-ref }}
 
