@@ -443,7 +443,7 @@ jobs:
         docker pull "${IMAGE_REF}"
 
     - name: Run Till Healthy
-      uses: wearefrank/ci-cd-templates/frank-run-till-healthy@d7447a21c0c753a1e0869cfa87aff768454a667b #2.2.0
+      uses: wearefrank/ci-cd-templates/frank-run-till-healthy@d7447a21c0c753a1e0869cfa87aff768454a667b # v2.4.9
       with:
         image-ref: ${{ steps.build-image-ref.outputs.image-ref }}
 
