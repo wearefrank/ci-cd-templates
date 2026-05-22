@@ -166,7 +166,7 @@ jobs:
       image-digest: ${{ steps.build-tarball.outputs.digest }}
       image-metadata: ${{ steps.build-tarball.outputs.metadata }}
     steps:
-    - uses: step-security/harden-runner@6c3c2f2c1c457b00c10c4848d6f5491db3b629df # v2.18.0
+    - uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
       with:
         disable-sudo: true
         egress-policy: audit
@@ -228,7 +228,7 @@ jobs:
     - name: Build From GHA Cache And Push To Registry
       if: inputs.image-artifact-backend == 'gh-artifacts'
       id: build-tarball
-      uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f #7.1.0
+      uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf #7.2.0
       with:
         context: .
         platforms: linux/amd64, linux/arm64
