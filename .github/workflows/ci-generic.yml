@@ -169,6 +169,11 @@ jobs:
   docker-ci:
     uses: wearefrank/ci-cd-templates/.github/workflows/docker-ci-generic.yml@d7447a21c0c753a1e0869cfa87aff768454a667b #2.4.9
     needs: update-buildinfo
+    permissions:
+      id-token: write
+      contents: read
+      packages: write
+      attestations: write
     secrets:
       token: ${{ secrets.token }}
       registry-username: ${{ secrets.registry-username || github.actor }}
