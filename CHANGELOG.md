@@ -1,5 +1,11 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.4.11](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.10...v2.4.11) (2026-05-28)
+
+### 🐛 Bug Fixes
+
+* missing permissions for id-token and attestations in ci-generic workflow ([ee1d4fb](https://github.com/wearefrank/ci-cd-templates/commit/ee1d4fb369448a8aa8c17511ada871d697506de2))
+
 ## [2.4.10](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.9...v2.4.10) (2026-04-20)
 
 ### 🤖 Build System
