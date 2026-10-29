@@ -170,7 +170,8 @@ ci:
 
 docker-release:
   uses: wearefrank/ci-cd-templates/.github/workflows/docker-release-generic.yml@1
-  needs: 
+  needs:
+    - analyze-commits
     - ci
   secrets:
     token: ${{ secrets.GITHUB_TOKEN }}
@@ -226,7 +227,8 @@ ci:
 
 docker-release:
   uses: wearefrank/ci-cd-templates/.github/workflows/docker-release-generic.yml@1
-  needs: 
+  needs:
+    - analyze-commits
     - ci
   secrets:
     token: ${{ secrets.GITHUB_TOKEN }}
