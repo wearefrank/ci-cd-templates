@@ -102,7 +102,23 @@ docker-release:
 
     # Add latest flavor
     latest-tag: true
+
+    # Release channel (e.g. 'next-major'). When set, the image is also tagged with the channel name.
+    # Default: '' (no channel tag)
+    channel: ''
 ```
+
+## Release channels and maintenance releases
+With semantic-release branches such as `next-major` (pre-release channel) or `1.x` (maintenance releases), the following applies:
+- `latest` is only added on `main`/`master` or tags, so channel and maintenance releases never move `latest`.
+- Pre-release versions (e.g. `3.0.0-next-major.1`) only get the full version tag; the `<major>` and `<major>.<minor>` tags are skipped by `docker/metadata-action`.
+- Maintenance releases (e.g. `1.4.1`) get `1.4.1`, `1.4` and `1`.
+- Pass the semantic-release channel as `channel` to also publish a moving tag named after the channel. The channel is empty on the default branch, so no extra tag is added there. The examples below read it from a `release-channel` output, which is written by the `verifyReleaseCmd` of `@semantic-release/exec` in `.releaserc`:
+  ``` json
+  "verifyReleaseCmd": "echo \"release-version=${nextRelease.version}\" >> $GITHUB_OUTPUT; echo \"release-channel=${nextRelease.channel}\" >> $GITHUB_OUTPUT"
+  ```
+
+The branches to release from are configured in the `.releaserc` `branches` option and in the `on.push.branches` of the calling workflow.
 
 ## Scenario's
  [Run Docker CI Workflow With Registry Backend And Copy Image From Source To Target Registry](#run-docker-ci-workflow-with-registry-backend-and-copy-image-from-source-to-target-registry)
@@ -116,6 +132,7 @@ analyze-commits:
     version-next: ${{ steps.next-version.outputs.release-version }}
     version-next-tag: ${{ steps.next-version.outputs.release-tag }}
     version-next-type: ${{ steps.next-version.outputs.release-type }}
+    version-next-channel: ${{ steps.next-version.outputs.release-channel }}
   steps:
     - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
       with:
@@ -153,12 +170,14 @@ ci:
 
 docker-release:
   uses: wearefrank/ci-cd-templates/.github/workflows/docker-release-generic.yml@1
-  needs: 
+  needs:
+    - analyze-commits
     - ci
   secrets:
     token: ${{ secrets.GITHUB_TOKEN }}
   with:
     version: ${{ needs.analyze-commits.outputs.version-next }}
+    channel: ${{ needs.analyze-commits.outputs.version-next-channel }}
 ```
 
 ### Run Docker CI Workflow With GitHub Artifacts Backend
@@ -169,6 +188,7 @@ analyze-commits:
     version-next: ${{ steps.next-version.outputs.release-version }}
     version-next-tag: ${{ steps.next-version.outputs.release-tag }}
     version-next-type: ${{ steps.next-version.outputs.release-type }}
+    version-next-channel: ${{ steps.next-version.outputs.release-channel }}
   steps:
     - uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
       with:
@@ -207,13 +227,15 @@ ci:
 
 docker-release:
   uses: wearefrank/ci-cd-templates/.github/workflows/docker-release-generic.yml@1
-  needs: 
+  needs:
+    - analyze-commits
     - ci
   secrets:
     token: ${{ secrets.GITHUB_TOKEN }}
   with:
     image-artifact-backend: 'gh-artifacts'
     version: ${{ needs.analyze-commits.outputs.version-next }}
+    channel: ${{ needs.analyze-commits.outputs.version-next-channel }}
 ```
 
 ## Outputs
