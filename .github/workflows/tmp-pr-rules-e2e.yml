@@ -1,0 +1,14 @@
+name: Tmp PR rules e2e
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  rules:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: wearefrank/ci-cd-templates/pull-request-rules@agents/github-actions-pull-request-rules
