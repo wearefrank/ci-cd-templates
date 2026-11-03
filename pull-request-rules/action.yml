@@ -1,0 +1,63 @@
+name: "Pull Request Rules"
+description: >
+  Checks a pull request against a base set of rules (Conventional Commits, no work-in-progress commits,
+  breaking change footers and no unquoted `@` mentions) and optionally the rules of the calling repository.
+
+  Needs to be used in a workflow triggered by `pull_request`.
+inputs:
+  rules-file:
+    description: >
+      Path, relative to the root of the calling repository, to a JavaScript file with extra rules and rules to skip.
+      The file is optional: when it does not exist only the base rules are checked.
+    default: .github/pull-request-rules.js
+  github-token:
+    description: Token used to read the pull request. Write permission on pull requests is only needed with `post-comment`.
+    default: ${{ github.token }}
+  post-comment:
+    description: >
+      Also post the results as a comment on the pull request. Needs the `pull-requests: write` permission,
+      which is not available on pull requests from forks.
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check event
+      shell: bash
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+      run: |
+        # Rules of the calling repository are executed, so never combine this with a privileged `pull_request_target` trigger.
+        if [ "$EVENT_NAME" != "pull_request" ]; then
+          echo "::error::The pull-request-rules action only supports the 'pull_request' event, not '$EVENT_NAME'."
+          exit 1
+        fi
+
+    - name: Checkout
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
+      with:
+        persist-credentials: false
+
+    - name: Setup Node
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f #6.3.0
+      with:
+        node-version: 24
+
+    - name: Install Danger
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+
+    - name: Check rules
+      shell: bash
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        DANGER_GITHUB_API_TOKEN: ${{ inputs.github-token }}
+        PR_RULES_FILE: ${{ inputs.rules-file }}
+        POST_COMMENT: ${{ inputs.post-comment }}
+      run: |
+        args=(ci --dangerfile "$ACTION_PATH/dangerfile.js" --id pull-request-rules --failOnErrors)
+        if [ "$POST_COMMENT" != "true" ]; then
+          args+=(--text-only)
+        fi
+        "$ACTION_PATH/node_modules/.bin/danger" "${args[@]}"

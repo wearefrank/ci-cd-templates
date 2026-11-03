@@ -1,0 +1,1 @@
+{"name":"pull-request-rules","private":true,"version":"0.0.0","dependencies":{"danger":"14.1.0"},"scripts":{"test":"node --test"},"description":"Base rules for the pull-request-rules action"}
