@@ -12,6 +12,9 @@ The purpose of these workflows an actions is to provide a maintainable way to re
 - [next-reference](./next-reference/README.md)
     Generates a reference to use for when a version is not available or appropriate.
 
+- [pull-request-rules](./pull-request-rules/README.md)
+    Checks a pull request against a base set of rules (Conventional Commits, no work-in-progress commits, `BREAKING:` footers and no unquoted `@` mentions) that the calling repository can extend with rules of its own.
+
 - [update-buildinfo](./update-buildinfo/README.md)
     Updates the BuildInfo.properties file with the new version and datetime. The file needs to be already present in order to update the content.
 

@@ -13,3 +13,13 @@ updates:
     groups:
       github-actions:
         patterns: [ "*" ]
+  - package-ecosystem: "npm"
+    directory: "/pull-request-rules"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+    commit-message:
+      prefix: "build(dependencies):"
+    groups:
+      npm:
+        patterns: [ "*" ]
