@@ -174,7 +174,7 @@ jobs:
       image-digest: ${{ steps.build-tarball.outputs.digest }}
       image-metadata: ${{ steps.build-tarball.outputs.metadata }}
     steps:
-    - uses: step-security/harden-runner@6c3c2f2c1c457b00c10c4848d6f5491db3b629df # v2.18.0
+    - uses: step-security/harden-runner@46b06cea07f9e64621fdf066ba77ac6915163d43 # v2.22.3
       with:
         disable-sudo: true
         egress-policy: audit
@@ -186,27 +186,27 @@ jobs:
           registry-1.docker.io:443
 
     - name: Checkout
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #7.0.1
       with:
         token: ${{ secrets.token }}
 
     - name: Download Pre-build Artifacts
       if: inputs.image-artifact-backend == 'gh-artifacts'
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #8.0.2
       with:
         pattern: pre-build-*
         merge-multiple: true
 
     - name: Download Build Artifacts
       if: inputs.image-artifact-backend == 'gh-artifacts'
-      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
+      uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #8.0.2
       with:
         pattern: build-*
         merge-multiple: true
 
     - name: Extract Image Metadata
       id: meta
-      uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf #6.0.0
+      uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 #6.2.0
       with:
         images: ${{ inputs.image-registry }}/${{ inputs.image-repo }}/${{ inputs.image-name }}
         tags: |
@@ -221,14 +221,14 @@ jobs:
 
     - name: Set up QEMU
       if: inputs.image-artifact-backend == 'gh-artifacts'
-      uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a #4.0.0
+      uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 #4.4.0
 
     - name: Set up Docker Buildx
       if: inputs.image-artifact-backend == 'gh-artifacts'
-      uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd #4.0.0
+      uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 #4.4.1
 
     - name: Login To Target Container Registry
-      uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # 4.1.0
+      uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # 4.7.0
       with:
         registry: ${{ inputs.image-registry }}
         username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
@@ -237,7 +237,7 @@ jobs:
     - name: Build From GHA Cache And Push To Registry
       if: inputs.image-artifact-backend == 'gh-artifacts'
       id: build-tarball
-      uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f #7.1.0
+      uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc #7.4.0
       with:
         context: .
         platforms: linux/amd64, linux/arm64
@@ -252,7 +252,7 @@ jobs:
 
     - name: Login To Source Container Registry
       if: inputs.image-artifact-backend == 'registry' && (inputs.source-image-repo || inputs.source-image-name)
-      uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # 4.1.0
+      uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # 4.7.0
       with:
         registry: ${{ inputs.source-image-registry }}
         username: ${{ secrets.source-registry-username == '' && github.actor || secrets.source-registry-username }}
@@ -288,13 +288,13 @@ jobs:
         echo "Image Ref ([<registry>/][<repo>/]<name>[:<tag>|@<digest>]): [$IMAGE_REF]"
 
     - name: Setup Go
-      uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c #6.4.0
+      uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e #7.0.0
       if: inputs.image-artifact-backend == 'registry'
       with:
         go-version: 1.26
 
     - name: Install Crane
-      uses: imjasonh/setup-crane@6da1ae018866400525525ce74ff892880c099987 #0.5
+      uses: imjasonh/setup-crane@feee3b6bb0d4c68370f256a4502498c9227e5c6b #0.7
       if: inputs.image-artifact-backend == 'registry'
 
     - name: Copy Image From Source Registry To Target Registry
