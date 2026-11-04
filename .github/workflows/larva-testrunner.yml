@@ -157,13 +157,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 #7.0.1
         with:
           token: ${{ secrets.token || secrets.GITHUB_TOKEN }}
       
       - name: Download Image Tarball Artifact
         if: inputs.image-artifact-backend == 'gh-artifacts'
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 #8.0.2
         with:
           name: ${{ inputs.image-artifact-name }}
 
@@ -207,7 +207,7 @@ jobs:
 
       - name: Login to Container Registry
         if: inputs.image-artifact-backend == 'registry'
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # 4.1.0
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # 4.7.0
         with:
           registry: ${{ steps.parse-image-ref.outputs.image-registry }}
           username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
@@ -233,13 +233,13 @@ jobs:
       
       - name: Wait Till Healthy Container
         id: wait-till-healthy
-        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@d7447a21c0c753a1e0869cfa87aff768454a667b #2.4.9
+        uses: wearefrank/ci-cd-templates/wait-till-healthy-container@3ea6c89c3ffb6c75528377110fea41851bc87c01 #2.4.11
         with:
           image-id: ${{ inputs.image-id }}
           image-name: ${{ inputs.image-ref }}
 
       - name: Run Larva Tests
-        uses: wearefrank/ci-cd-templates/larva-testrunner@d7447a21c0c753a1e0869cfa87aff768454a667b #2.4.9
+        uses: wearefrank/ci-cd-templates/larva-testrunner@3ea6c89c3ffb6c75528377110fea41851bc87c01 #2.4.11
         timeout-minutes: 5
         with:
           container-id: ${{ steps.wait-till-healthy.outputs.container-id }}
