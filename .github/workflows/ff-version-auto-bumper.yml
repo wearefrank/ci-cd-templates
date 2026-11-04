@@ -67,6 +67,10 @@ on:
         type: boolean
         description: Enable or disable the update of custom Parameter file
         default: false
+      docker-scout-enabled:
+        type: boolean
+        description: Enable or disable the Docker Scout comparison of the current and requested F!F image
+        default: false
     secrets:
       token:
         required: false
@@ -225,7 +229,7 @@ jobs:
       continue-on-error: true
 
     - name: Docker Scout
-      if: (env.pr-outdated || env.existing-prs == '[]') && env.VERSION_CHANGED && env.DOCKERHUB_USERNAME && env.DOCKERHUB_TOKEN
+      if: inputs.docker-scout-enabled && (env.pr-outdated || env.existing-prs == '[]') && env.VERSION_CHANGED && env.DOCKERHUB_USERNAME && env.DOCKERHUB_TOKEN
       id: docker-scout
       uses: docker/scout-action@v1
       with:

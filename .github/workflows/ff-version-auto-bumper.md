@@ -7,7 +7,7 @@ It also checks if there is an update in the custom code `Parameter.java` file th
 
 The variables defined under `with` section below are optional. They all have default values and if any of the default values doesn't fit to a project then it will just be skipped. For example in Zaakbrug project, F!F version tag is updated three different files; if a project needs to update F!F version in two files then the third one will be skipped lest to have an error. It is not possible to update four or more files for now. The workflow will be updated to make it more dynamic and configurable in order to have a workflow independent from any project to be able to update the F!F version in as many files as wanted.
 
-**NOTE: Dockerhub credentials are only needed to generate a Docker Scout report, which shows changes between versions in great details. When no Dockerhub credentials are provided, the Docker Scout report generation will be skipped automatically.
+**NOTE: Dockerhub credentials are only needed to generate a Docker Scout report, which shows changes between versions in great details. The Docker Scout report generation is disabled by default; set `docker-scout-enabled` to `true` to generate it. It is also skipped automatically when no Dockerhub credentials are provided. Keeping it disabled avoids workflow failures when Docker Scout is rate limited by Maven Central (HTTP 429) while analyzing the image.
 
 **WARNING: The GitHub token must be PAT(Personal Access Token) due to permission issues with automatically running CI in the created PR. A workaround when not using a PAT is to close and reopen the PR.**
 
@@ -88,6 +88,10 @@ update-ff-version:
     # The toggle for custom files. This is special for Zaakbrug project to update the Parameter.java-orig file. If not want to update this file then set false.
     # Default: false
     update-customcode-enabled: true/false
+
+    # The toggle for the Docker Scout report in the PR description. Docker Scout also requires the DockerHub credentials. If want to run Docker Scout then set true.
+    # Default: false
+    docker-scout-enabled: true/false
 ```
 
 ## Scenario's
