@@ -1,5 +1,23 @@
 [![conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.0-yellow.svg)](https://conventionalcommits.org) [![semantic versioning](https://img.shields.io/badge/semantic%20versioning-2.0.0-green.svg)](https://semver.org)
 
+## [2.5.0](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.11...v2.5.0) (2026-11-04)
+
+### 🍕 Features
+
+* **docker-release:** add channel input to tag images with the release channel ([2372366](https://github.com/wearefrank/ci-cd-templates/commit/23723665307a9ecaea6f8d01ef9f5556e99ad7c7))
+
+### 📝 Documentation
+
+* **docker-release:** add analyze-commits to docker-release needs in examples ([8acc21b](https://github.com/wearefrank/ci-cd-templates/commit/8acc21bc3f10d1c8cc84d39faf9168df685d6326))
+
+### 🧑‍💻 Code Refactoring
+
+* **ff-version-bumper:** add docker-scout-enabled input (default false) to toggle Docker Scout analysis ([b628539](https://github.com/wearefrank/ci-cd-templates/commit/b628539a8b7a2fb65c45214d74fc2fa4065a7fe0)), closes [#116](https://github.com/wearefrank/ci-cd-templates/issues/116)
+
+### 🔁 Continuous Integration
+
+* refactor semantic-release dependency management ([#118](https://github.com/wearefrank/ci-cd-templates/issues/118)) ([9b14986](https://github.com/wearefrank/ci-cd-templates/commit/9b14986e6a4fbe39ca48b97c55af29da40adf086))
+
 ## [2.4.11](https://github.com/wearefrank/ci-cd-templates/compare/v2.4.10...v2.4.11) (2026-05-28)
 
 ### 🐛 Bug Fixes
