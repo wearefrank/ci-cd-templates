@@ -39,13 +39,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f #6.3.0
         with:
-          node-version: 24
+          node-version: lts/*
       
       - name: Install dependencies
-        run: yarn global add semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github @semantic-release/exec @semantic-release/release-notes-generator @semantic-release/commit-analyzer conventional-changelog-conventionalcommits
+        run: corepack yarn --cwd .github/semantic-release install --frozen-lockfile
       
       - name: Semantic Release
-        run: semantic-release
+        run: ./.github/semantic-release/node_modules/.bin/semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.WEAREFRANK_BOT_PAT }}
           GH_TOKEN: ${{ secrets.WEAREFRANK_BOT_PAT }}
