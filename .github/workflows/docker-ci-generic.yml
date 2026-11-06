@@ -296,7 +296,7 @@ jobs:
 
     - name: Lint Dockerfile with Checkov
       id: checkov
-      uses: bridgecrewio/checkov-action@c10e2438743528f9e4549758fad8b7a62052541d #12.3136.0
+      uses: bridgecrewio/checkov-action@45edc9d8856b664db2ec251f5f8632361f0a67aa #12.3139.0
       with:
         directory: .
         framework: dockerfile
@@ -314,7 +314,7 @@ jobs:
         path: reports/checkov-results.sarif
 
     - name: Upload to GitHub Security
-      uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 #4.39.1
+      uses: github/codeql-action/upload-sarif@1fc58d04a4d4374f921bdac573c3811c240f9c26 #4.39.2
       if: inputs.upload-sarif-to-security
       with:
         sarif_file: 'reports/checkov-results.sarif'
