@@ -151,7 +151,7 @@ jobs:
       image-digest: ${{ steps.build-tarball.outputs.digest || steps.build-registry.outputs.digest }}
       image-metadata: ${{ steps.build-tarball.outputs.metadata || steps.build-registry.outputs.metadata }}
     steps:
-    - uses: step-security/harden-runner@46b06cea07f9e64621fdf066ba77ac6915163d43 # v2.22.3
+    - uses: step-security/harden-runner@1d88384fd173af6ecb012dfd0264a306b711241a # v2.22.4
       with:
         disable-sudo: true
         egress-policy: audit
@@ -201,7 +201,7 @@ jobs:
 
     - name: Login to Container Registry
       if: inputs.image-artifact-backend == 'registry'
-      uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # 4.7.0
+      uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # 4.8.0
       with:
         registry: ${{ inputs.image-registry }}
         username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
@@ -281,7 +281,7 @@ jobs:
       contents: read 
     if: inputs.chekov-linter-enabled
     steps:
-    - uses: step-security/harden-runner@46b06cea07f9e64621fdf066ba77ac6915163d43 # v2.22.3
+    - uses: step-security/harden-runner@1d88384fd173af6ecb012dfd0264a306b711241a # v2.22.4
       with:
         disable-sudo: true
         egress-policy: audit
@@ -296,7 +296,7 @@ jobs:
 
     - name: Lint Dockerfile with Checkov
       id: checkov
-      uses: bridgecrewio/checkov-action@c10e2438743528f9e4549758fad8b7a62052541d #12.3136.0
+      uses: bridgecrewio/checkov-action@45edc9d8856b664db2ec251f5f8632361f0a67aa #12.3139.0
       with:
         directory: .
         framework: dockerfile
@@ -314,7 +314,7 @@ jobs:
         path: reports/checkov-results.sarif
 
     - name: Upload to GitHub Security
-      uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 #4.39.1
+      uses: github/codeql-action/upload-sarif@33d7b85da1a04171e211befe2c739303b9a4c066 #4.39.3
       if: inputs.upload-sarif-to-security
       with:
         sarif_file: 'reports/checkov-results.sarif'
@@ -370,7 +370,7 @@ jobs:
       packages: read
     needs: build
     steps:
-    - uses: step-security/harden-runner@46b06cea07f9e64621fdf066ba77ac6915163d43 # v2.22.3
+    - uses: step-security/harden-runner@1d88384fd173af6ecb012dfd0264a306b711241a # v2.22.4
       with:
         disable-sudo: true
         egress-policy: audit
@@ -397,7 +397,7 @@ jobs:
 
     - name: Login to Container Registry
       if: inputs.image-artifact-backend == 'registry'
-      uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # 4.7.0
+      uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # 4.8.0
       with:
         registry: ${{ inputs.image-registry }}
         username: ${{ secrets.registry-username == '' && github.actor || secrets.registry-username }}
@@ -443,7 +443,7 @@ jobs:
         docker pull "${IMAGE_REF}"
 
     - name: Run Till Healthy
-      uses: wearefrank/ci-cd-templates/frank-run-till-healthy@3ea6c89c3ffb6c75528377110fea41851bc87c01 # v2.4.11
+      uses: wearefrank/ci-cd-templates/frank-run-till-healthy@b8eabd63f33049bb804be55918652ab50c69f730 # v2.5.1
       with:
         image-ref: ${{ steps.build-image-ref.outputs.image-ref }}
 
